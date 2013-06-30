@@ -10,10 +10,12 @@ to errors.  The make program is currently just "agda --vim", i.e. it does not co
 This requires syntax highlighting to be turned on and, for the interactivity, python plugins to be supported.  This
 interacts via the same interface emacs uses, though a lot of the logic is in the emacs mode.  This not an officially
 supported mode, so there's no guarantee it will work with different versions of Agda.  I've currently used it with
-Agda 2.3.2.1.
+Agda 2.3.2.1.  I have not tested Literate Agda files at all and would be a bit surprised if they worked.
 
 This currently does not use any of the vim "package" formats.  Copying the vim subfolder into your .vim file
-should be adequate.
+should be adequate and adding the following line to filetypes.vim should be adequate:
+
+    au BufNewFile,BufRead *.agda setf agda
 
 It is currently required to explicitly executed the Ex command "Load" to start the interactivity, but
 there is really no reason it couldn't be automatically called.  It is necessary to call it to resync the
