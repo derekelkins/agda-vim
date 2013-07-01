@@ -12,10 +12,10 @@ endfunction
 
 call ReloadSyntax()
 
-"function! Load(quiet)
+function! Load(quiet)
     " Do nothing.  Overidden below with a Python function if python plugins
     " are supported.
-"endfunction
+endfunction
 
 " map ,rs :call ReloadSyntax()<CR> " Just do :make instead
 au QuickfixCmdPost make call ReloadSyntax()|call Load(1)
@@ -24,14 +24,11 @@ set autowrite
 runtime agda-utf8.vim
 
 set makeprg=agda\ --vim\ %
-" Unsolved metas, parse errors, error header, error footer, error footer, error body, ignore everything else
 set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
 if has('python') 
 
 python << EOF
-# define AgdaRange class
-# define asHaskellList function to print a Python list as an Haskell list
 import vim
 import re
 import subprocess
@@ -284,7 +281,8 @@ endfunction
 command! -nargs=0 Load call Load(0)
 command! -nargs=0 Reload silent! make!|redraw!
 command! -nargs=0 RestartAgda python RestartAgda()
-command! -nargs=1 ShowImplicitArguments python sendCommand('ShowImplicitArgs "%s"' % "<args>")
+command! -nargs=0 ShowImplicitArguments python sendCommand('ShowImplicitArgs True')
+command! -nargs=0 HideImplicitArguments python sendCommand('ShowImplicitArgs False')
 command! -nargs=0 ToggleImplicitArguments python sendCommand('ToggleImplicitArgs')
 command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
 command! -nargs=0 Metas python sendCommand('Cmd_metas')
