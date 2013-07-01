@@ -17,23 +17,23 @@ should be adequate and adding the following line to filetypes.vim should be adeq
 
     au BufNewFile,BufRead *.agda setf agda
 
-It is currently required to explicitly executed the Ex command "Load" to start the interactivity, but
-there is really no reason it couldn't be automatically called.  It is necessary to call it to resync the
-file, primarily when holes are manually created or deleted.  There should be no trouble hooking it to call
-Load after every save, though that is a bit overkill.  :make calls Load.
-
 The commands and mappings as defined currently are below:
 
-    command! -nargs=0 Load call Load()
+    command! -nargs=0 Load call Load(0)
+    command! -nargs=0 Reload silent! make!|redraw!
     command! -nargs=0 RestartAgda python RestartAgda()
+    command! -nargs=1 ShowImplicitArguments python sendCommand('ShowImplicitArgs "%s"' % "<args>")
     command! -nargs=0 ToggleImplicitArguments python sendCommand('ToggleImplicitArgs')
     command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
     command! -nargs=0 Metas python sendCommand('Cmd_metas')
     command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
     command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
+    map ,l :call Load(1)<CR>
     map ,t :call Infer()<CR>
     map ,r :call Refine()<CR>
     map ,g :call Give()<CR>
     map ,c :call MakeCase()<CR>
     map ,a :call Auto()<CR>
     map ,e :call Context()<CR>
+    map ,n :call Normalize()<CR>
+    map ,m :call ShowModule()<CR>
