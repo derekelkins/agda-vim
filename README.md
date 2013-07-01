@@ -29,7 +29,7 @@ The commands and mappings as defined currently are below:
     command! -nargs=0 Metas python sendCommand('Cmd_metas')
     command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
     command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
-    map ,l :call Load(1)<CR>
+    map ,l :Reload<CR>
     map ,t :call Infer()<CR>
     map ,r :call Refine()<CR>
     map ,g :call Give()<CR>
