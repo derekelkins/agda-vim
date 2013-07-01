@@ -22,7 +22,8 @@ The commands and mappings as defined currently are below:
     command! -nargs=0 Load call Load(0)
     command! -nargs=0 Reload silent! make!|redraw!
     command! -nargs=0 RestartAgda python RestartAgda()
-    command! -nargs=1 ShowImplicitArguments python sendCommand('ShowImplicitArgs "%s"' % "<args>")
+    command! -nargs=0 ShowImplicitArguments python sendCommand('ShowImplicitArgs True')
+    command! -nargs=0 HideImplicitArguments python sendCommand('ShowImplicitArgs False')
     command! -nargs=0 ToggleImplicitArguments python sendCommand('ToggleImplicitArgs')
     command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
     command! -nargs=0 Metas python sendCommand('Cmd_metas')
