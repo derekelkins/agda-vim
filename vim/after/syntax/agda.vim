@@ -3,11 +3,11 @@
 " the remainder is covered by the license described in LICENSE.
 function! ReloadSyntax()
     syntax clear
-    runtime syntax/agda.vim
     let f = expand('%:h') . "/." . expand('%:t') . ".vim"
     if filereadable(f)
         exec "source " . escape(f, '*')
     endif
+    runtime syntax/agda.vim
 endfunction
 
 call ReloadSyntax()
@@ -110,7 +110,7 @@ def interpretResponse(responses, quiet = False):
             match = re.search(r'(\d+)\s+"((?:[^"\\]|\\.)*)"', response[19:])
             replaceHole(match.group(2).decode('string_escape'))
         else:
-            print response
+            pass # print response
 
 def sendCommand(arg, interpret=True, quiet=False):
     vim.command(':write')
@@ -288,7 +288,7 @@ command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
 command! -nargs=0 Metas python sendCommand('Cmd_metas')
 command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
 command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
-map ,l :call Load(1)<CR>
+map ,l :Reload<CR>
 map ,t :call Infer()<CR>
 map ,r :call Refine()<CR>
 map ,g :call Give()<CR>
