@@ -28,6 +28,67 @@ set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
 if has('python') 
 
+function! s:LogAgda(name, text, append)
+    let agdawinnr = bufwinnr('__Agda__')
+    let prevwinnr = winnr()
+    if agdawinnr == -1
+        let eventignore_save = &eventignore
+        set eventignore=all
+
+        silent keepalt botright 8split __Agda__
+
+        let &eventignore = eventignore_save
+        setlocal noreadonly
+        setlocal buftype=nofile
+        setlocal bufhidden=hide
+        setlocal noswapfile
+        setlocal nobuflisted
+        setlocal nolist
+        setlocal nonumber
+        setlocal nowrap
+        setlocal textwidth=0
+        setlocal nocursorline
+        setlocal nocursorcolumn
+
+        if exists('+relativenumber')
+            setlocal norelativenumber
+        endif
+    else
+        let eventignore_save = &eventignore
+        set eventignore=BufEnter
+
+        execute agdawinnr . 'wincmd w'
+        let &eventignore = eventignore_save
+    endif
+    
+    let lazyredraw_save = &lazyredraw
+    set lazyredraw
+    let eventignore_save = &eventignore
+    set eventignore=all
+
+    if a:append == 'True'
+        exec 'setlocal statusline=' . substitute(a:name, ' ', '\\ ', 'g')
+        silent put =a:text
+        silent put _
+    else
+        exec 'setlocal statusline=' . substitute(a:name, ' ', '\\ ', 'g')
+        silent %delete _
+        silent 0put =a:text
+        silent put _
+    endif
+
+    0
+
+    let &lazyredraw = lazyredraw_save
+    let &eventignore = eventignore_save
+
+    let eventignore_save = &eventignore
+    set eventignore=BufEnter
+
+    execute prevwinnr . 'wincmd w'
+    let &eventignore = eventignore_save
+endfunction    
+
 python << EOF
 import vim
 import re
@@ -92,10 +153,11 @@ def getOutput():
 
 def interpretResponse(responses, quiet = False):
     for response in responses:
+        # print response
         if response.startswith('(agda2-info-action '):
-            if quiet: continue
-            for match in re.finditer(r'"((?:[^"\\]|\\.)*)"', response[19:]):
-                print match.group(1).decode('string_escape')
+            # if quiet: continue
+            strings = re.findall(r'"((?:[^"\\]|\\.)*)"', response[19:])
+            vim.command('call s:LogAgda("%s","%s","%s")'% (strings[0],strings[1], response.endswith('t)')))
         elif "(agda2-goals-action '" in response:
             findGoals([int(s) for s in re.findall(r'(\d+)', response[response.index("agda2-goals-action '")+21:])])
         elif "(agda2-make-case-action '" in response:
@@ -112,15 +174,12 @@ def interpretResponse(responses, quiet = False):
         else:
             pass # print response
 
-def sendCommand(arg, interpret=True, quiet=False):
+def sendCommand(arg, quiet=False):
     vim.command(':write')
     f = vim.current.buffer.name;
     # The x is a really hacky way of getting a consistent final response.  Namely, "cannot read"
     agda.stdin.write('IOTCM "%s" None Indirect (%s)\nx\n' % (f, arg))
-    if interpret:
-        interpretResponse(getOutput(), quiet)
-    else:
-        print getOutput()
+    interpretResponse(getOutput(), quiet)
 
 #def getIdentifierAtCursor():
 #    (r, c) = vim.current.window.cursor
@@ -140,7 +199,9 @@ def replaceHole(replacement):
         end = c+1
     else:
         try:
-            start = re.search(r"{!", line[:min(len(line),c+2)]).start()
+            mo = None
+            for mo in re.finditer(r"{!", line[:min(len(line),c+2)]): pass
+            start = mo.start()
             end = re.search(r"!}", line[max(0,c-1):]).end() + max(0,c-1)
         except AttributeError:
             return
@@ -151,8 +212,10 @@ def getHoleBodyAtCursor():
     line = vim.current.line
     if line[c] == "?":
         return ("?", findGoal(r, c+1))
-    try:
-        start = re.search(r"{!", line[:min(len(line),c+2)]).start()
+    try: # handle virtual space better
+        mo = None
+        for mo in re.finditer(r"{!", line[:min(len(line),c+2)]): pass
+        start = mo.start()
         end = re.search(r"!}", line[max(0,c-1):]).end() + max(0,c-1)
     except AttributeError:
         return None
@@ -209,6 +272,7 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 else:
+    print result
     sendCommand('Cmd_refine_or_intro False %d noRange "%s"' % (result[1], result[0]), quiet = 1)
 EOF
 endfunction
@@ -298,6 +362,6 @@ map ,e :call Context()<CR>
 map ,n :call Normalize()<CR>
 map ,m :call ShowModule()<CR>
 
-call Load(1)
+Reload
 
 endif
