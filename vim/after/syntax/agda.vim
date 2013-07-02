@@ -69,12 +69,10 @@ function! s:LogAgda(name, text, append)
     if a:append == 'True'
         exec 'setlocal statusline=' . substitute(a:name, ' ', '\\ ', 'g')
         silent put =a:text
-        silent put _
     else
         exec 'setlocal statusline=' . substitute(a:name, ' ', '\\ ', 'g')
         silent %delete _
         silent 0put =a:text
-        silent put _
     endif
 
     0
@@ -155,7 +153,8 @@ def interpretResponse(responses, quiet = False):
     for response in responses:
         # print response
         if response.startswith('(agda2-info-action '):
-            # if quiet: continue
+            if quiet and '*Error*' in response: vim.command('cwindow')
+            if quiet: continue
             strings = re.findall(r'"((?:[^"\\]|\\.)*)"', response[19:])
             vim.command('call s:LogAgda("%s","%s","%s")'% (strings[0],strings[1], response.endswith('t)')))
         elif "(agda2-goals-action '" in response:
@@ -175,7 +174,7 @@ def interpretResponse(responses, quiet = False):
             pass # print response
 
 def sendCommand(arg, quiet=False):
-    vim.command(':write')
+    vim.command(':silent! write')
     f = vim.current.buffer.name;
     # The x is a really hacky way of getting a consistent final response.  Namely, "cannot read"
     agda.stdin.write('IOTCM "%s" None Indirect (%s)\nx\n' % (f, arg))
@@ -242,9 +241,9 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 elif result[0] == "?":
-    sendCommand('Cmd_give %d noRange "%s"' % (result[1], promptUser("Enter expression: ")), quiet = 1)
+    sendCommand('Cmd_give %d noRange "%s"' % (result[1], promptUser("Enter expression: ")))
 else:
-    sendCommand('Cmd_give %d noRange "%s"' % (result[1], result[0]), quiet = 1)
+    sendCommand('Cmd_give %d noRange "%s"' % (result[1], result[0]))
 EOF
 endfunction
 
@@ -257,9 +256,9 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 elif result[0] == "?":
-    sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], promptUser("Make case on: ")), quiet = 1)
+    sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], promptUser("Make case on: ")))
 else:
-    sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], result[0]), quiet = 1)
+    sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], result[0]))
 EOF
 endfunction
 
@@ -273,7 +272,7 @@ elif result[1] is None:
     print "Goal not loaded"
 else:
     print result
-    sendCommand('Cmd_refine_or_intro False %d noRange "%s"' % (result[1], result[0]), quiet = 1)
+    sendCommand('Cmd_refine_or_intro False %d noRange "%s"' % (result[1], result[0]))
 EOF
 endfunction
 
@@ -286,7 +285,7 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 else:
-    sendCommand('Cmd_auto %d noRange "%s"' % (result[1], ""), quiet = 1)
+    sendCommand('Cmd_auto %d noRange "%s"' % (result[1], ""))
 EOF
 endfunction
 
@@ -352,15 +351,15 @@ command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
 command! -nargs=0 Metas python sendCommand('Cmd_metas')
 command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
 command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
-map ,l :Reload<CR>
-map ,t :call Infer()<CR>
-map ,r :call Refine()<CR>
-map ,g :call Give()<CR>
-map ,c :call MakeCase()<CR>
-map ,a :call Auto()<CR>
-map ,e :call Context()<CR>
-map ,n :call Normalize()<CR>
-map ,m :call ShowModule()<CR>
+nmap <buffer> ,l :Reload<CR>
+nmap <buffer> ,t :call Infer()<CR>
+nmap <buffer> ,r :call Refine()<CR>
+nmap <buffer> ,g :call Give()<CR>
+nmap <buffer> ,c :call MakeCase()<CR>
+nmap <buffer> ,a :call Auto()<CR>
+nmap <buffer> ,e :call Context()<CR>
+nmap <buffer> ,n :call Normalize()<CR>
+nmap <buffer> ,m :call ShowModule()<CR>
 
 Reload
 
