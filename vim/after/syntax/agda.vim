@@ -271,7 +271,6 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 else:
-    print result
     sendCommand('Cmd_refine_or_intro False %d noRange "%s"' % (result[1], result[0]))
 EOF
 endfunction
