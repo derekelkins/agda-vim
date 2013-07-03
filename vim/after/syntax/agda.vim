@@ -159,8 +159,18 @@ def interpretResponse(responses, quiet = False):
             vim.command('call s:LogAgda("%s","%s","%s")'% (strings[0],strings[1], response.endswith('t)')))
         elif "(agda2-goals-action '" in response:
             findGoals([int(s) for s in re.findall(r'(\d+)', response[response.index("agda2-goals-action '")+21:])])
+        elif "(agda2-make-case-action-extendlam '" in response:
+            response = response.replace("?", "{!   !}") # this probably isn't safe
+            cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action-extendlam '")+34:])
+            col = vim.current.window.cursor[1]
+            line = vim.current.line
+            start = line.rindex('{', 0, col) + 1
+            end = line.index('}', col)
+            vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
+            sendCommand('Cmd_load "%s" []' % f, quiet = quiet)
+            break
         elif "(agda2-make-case-action '" in response:
-            response = response.replace("?", "{!   !}")
+            response = response.replace("?", "{!   !}") # this probably isn't safe
             cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action '")+24:])
             row = vim.current.window.cursor[0]
             vim.current.buffer[row-1:row] = cases
