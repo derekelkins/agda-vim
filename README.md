@@ -8,12 +8,12 @@ it sets Agda as the make program to automatically generate and load the local vi
 to errors.  The make program is currently just "agda --vim", i.e. it does not compile the program.
 
 This requires syntax highlighting to be turned on and, for the interactivity, python plugins to be supported.  This
-interacts via the same interface emacs uses, though a lot of the logic is in the emacs mode.  This not an officially
+interacts via the same interface emacs uses, though a lot of the logic is in the emacs mode.  This is not an officially
 supported mode, so there's no guarantee it will work with different versions of Agda.  I've currently used it with
 Agda 2.3.2.1.  I have not tested Literate Agda files at all and would be a bit surprised if they worked.
 
 This currently does not use any of the vim "package" formats.  Copying the vim subfolder into your .vim file
-should be adequate and adding the following line to filetypes.vim should be adequate:
+should and adding the following line to filetypes.vim should be adequate:
 
     au BufNewFile,BufRead *.agda setf agda
 
@@ -29,12 +29,14 @@ The commands and mappings as defined currently are below:
     command! -nargs=0 Metas python sendCommand('Cmd_metas')
     command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
     command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
-    map ,l :Reload<CR>
-    map ,t :call Infer()<CR>
-    map ,r :call Refine()<CR>
-    map ,g :call Give()<CR>
-    map ,c :call MakeCase()<CR>
-    map ,a :call Auto()<CR>
-    map ,e :call Context()<CR>
-    map ,n :call Normalize()<CR>
-    map ,m :call ShowModule()<CR>
+    nmap <buffer> ,l :Reload<CR>
+    nmap <buffer> ,t :call Infer()<CR>
+    nmap <buffer> ,r :call Refine("False")<CR>
+    nmap <buffer> ,R :call Refine("True")<CR>
+    nmap <buffer> ,g :call Give()<CR>
+    nmap <buffer> ,c :call MakeCase()<CR>
+    nmap <buffer> ,a :call Auto()<CR>
+    nmap <buffer> ,e :call Context()<CR>
+    nmap <buffer> ,n :call Normalize("False")<CR>
+    nmap <buffer> ,N :call Normalize("True")<CR>
+    nmap <buffer> ,m :call ShowModule()<CR>

@@ -53,6 +53,8 @@ imap <leader>throughshortmid  ⃓
 imap <leader>througho  ⃘
 
 " Math
+imap <leader>{{ ⦃
+imap <leader>}} ⦄
 imap <leader>: ∶
 imap <leader>:: ∷
 imap <leader>;  ﹔
@@ -465,6 +467,8 @@ cmap <leader>throughshortmid  ⃓
 cmap <leader>througho  ⃘
 
 " Math
+cmap <leader>{{ ⦃
+cmap <leader>}} ⦄
 cmap <leader>: ∶
 cmap <leader>:: ∷
 cmap <leader>;  ﹔

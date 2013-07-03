@@ -93,6 +93,7 @@ import re
 import subprocess
 
 # start Agda
+# I'm pretty sure this will start an agda process per buffer which is less than desirable...
 agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE)
 
 goals = {}
@@ -272,7 +273,7 @@ else:
 EOF
 endfunction
 
-function! Refine()
+function! Refine(unfoldAbstract)
 python << EOF
 import vim
 result = getHoleBodyAtCursor()
@@ -281,7 +282,7 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 else:
-    sendCommand('Cmd_refine_or_intro False %d noRange "%s"' % (result[1], result[0]))
+    sendCommand('Cmd_refine_or_intro %s %d noRange "%s"' % (vim.eval('a:unfoldAbstract'), result[1], result[0]))
 EOF
 endfunction
 
@@ -324,17 +325,16 @@ else:
 EOF
 endfunction
 
-function! Normalize()
+function! Normalize(unfoldAbstract)
 python << EOF
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
-    sendCommand('Cmd_compute_toplevel False "%s"' % promptUser("Enter expression: "))
+    sendCommand('Cmd_compute_toplevel %s "%s"' % (vim.eval('a:unfoldAbstract'), promptUser("Enter expression: ")))
 elif result[1] is None:
     print "Goal not loaded"
 else:
-    # True/False determines whether to unfold abstract definitions or not.
-    sendCommand('Cmd_compute False %d noRange "%s"' % (result[1], result[0]))
+    sendCommand('Cmd_compute %s %d noRange "%s"' % (vim.eval('a:unfoldAbstract'), result[1], result[0]))
 EOF
 endfunction
 
@@ -362,12 +362,14 @@ command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
 command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
 nmap <buffer> ,l :Reload<CR>
 nmap <buffer> ,t :call Infer()<CR>
-nmap <buffer> ,r :call Refine()<CR>
+nmap <buffer> ,r :call Refine("False")<CR>
+nmap <buffer> ,R :call Refine("True")<CR>
 nmap <buffer> ,g :call Give()<CR>
 nmap <buffer> ,c :call MakeCase()<CR>
 nmap <buffer> ,a :call Auto()<CR>
 nmap <buffer> ,e :call Context()<CR>
-nmap <buffer> ,n :call Normalize()<CR>
+nmap <buffer> ,n :call Normalize("False")<CR>
+nmap <buffer> ,N :call Normalize("True")<CR>
 nmap <buffer> ,m :call ShowModule()<CR>
 
 Reload
