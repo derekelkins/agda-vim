@@ -98,8 +98,18 @@ agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subproce
 
 goals = {}
 
+rewriteMode = "Normalised"
+
 # synID, synIDattr, synID = 85 corresponds to agdaHole
 # This should be calculated rather than hard-coded.
+
+def setRewriteMode(mode):
+    global rewriteMode
+    mode = mode.strip()
+    if mode not in ["AsIs", "Normalised", "HeadNormal", "Instantiated"]:
+        rewriteMode = "Normalised"
+    else:
+        rewriteMode = mode
 
 def promptUser(msg):
     vim.command('call inputsave()')
@@ -308,7 +318,7 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 else:
-    sendCommand('Cmd_goal_type_context_infer AsIs %d noRange "%s"' % (result[1], result[0]))
+    sendCommand('Cmd_goal_type_context_infer %s %d noRange "%s"' % (rewriteMode, result[1], result[0]))
 EOF
 endfunction
 
@@ -317,11 +327,11 @@ python << EOF
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
-    sendCommand('Cmd_infer_toplevel AsIs "%s"' % promptUser("Enter expression: "))
+    sendCommand('Cmd_infer_toplevel %s "%s"' % (rewriteMode, promptUser("Enter expression: ")))
 elif result[1] is None:
     print "Goal not loaded"
 else:
-    sendCommand('Cmd_infer AsIs %d noRange "%s"' % (result[1], result[0]))
+    sendCommand('Cmd_infer %s %d noRange "%s"' % (rewriteMode, result[1], result[0]))
 EOF
 endfunction
 
@@ -360,6 +370,7 @@ command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
 command! -nargs=0 Metas python sendCommand('Cmd_metas')
 command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
 command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
+command! -nargs=1 SetRewriteMode python setRewriteMode("<args>")
 nmap <buffer> ,l :Reload<CR>
 nmap <buffer> ,t :call Infer()<CR>
 nmap <buffer> ,r :call Refine("False")<CR>

@@ -29,6 +29,7 @@ The commands and mappings as defined currently are below:
     command! -nargs=0 Metas python sendCommand('Cmd_metas')
     command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
     command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
+    command! -nargs=1 SetRewriteMode python setRewriteMode("<args>")
     nmap <buffer> ,l :Reload<CR>
     nmap <buffer> ,t :call Infer()<CR>
     nmap <buffer> ,r :call Refine("False")<CR>
