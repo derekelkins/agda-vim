@@ -100,9 +100,6 @@ goals = {}
 
 rewriteMode = "Normalised"
 
-# synID, synIDattr, synID = 85 corresponds to agdaHole
-# This should be calculated rather than hard-coded.
-
 def setRewriteMode(mode):
     global rewriteMode
     mode = mode.strip()
@@ -139,7 +136,7 @@ def findGoals(goalList):
                 start = min(hstart, qstart)
             if start != -1:
                 start = start + 1
-                if vim.eval('synID("%d", "%d", 0)' % (row, start)) == '85': # Magic: synID of agdaHole
+                if vim.eval('synID("%d", "%d", 0)' % (row, start)) == vim.eval('hlID("agdaHole")'):
                     goals[goalList.pop(0)] = (row, start)
             if len(goalList) == 0: break
         if len(goalList) == 0: break
