@@ -368,17 +368,17 @@ command! -nargs=0 Metas python sendCommand('Cmd_metas')
 command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
 command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
 command! -nargs=1 SetRewriteMode python setRewriteMode("<args>")
-nmap <buffer> ,l :Reload<CR>
-nmap <buffer> ,t :call Infer()<CR>
-nmap <buffer> ,r :call Refine("False")<CR>
-nmap <buffer> ,R :call Refine("True")<CR>
-nmap <buffer> ,g :call Give()<CR>
-nmap <buffer> ,c :call MakeCase()<CR>
-nmap <buffer> ,a :call Auto()<CR>
-nmap <buffer> ,e :call Context()<CR>
-nmap <buffer> ,n :call Normalize("False")<CR>
-nmap <buffer> ,N :call Normalize("True")<CR>
-nmap <buffer> ,m :call ShowModule()<CR>
+nmap <buffer> <LocalLeader>l :Reload<CR>
+nmap <buffer> <LocalLeader>t :call Infer()<CR>
+nmap <buffer> <LocalLeader>r :call Refine("False")<CR>
+nmap <buffer> <LocalLeader>R :call Refine("True")<CR>
+nmap <buffer> <LocalLeader>g :call Give()<CR>
+nmap <buffer> <LocalLeader>c :call MakeCase()<CR>
+nmap <buffer> <LocalLeader>a :call Auto()<CR>
+nmap <buffer> <LocalLeader>e :call Context()<CR>
+nmap <buffer> <LocalLeader>n :call Normalize("False")<CR>
+nmap <buffer> <LocalLeader>N :call Normalize("True")<CR>
+nmap <buffer> <LocalLeader>m :call ShowModule()<CR>
 
 Reload
 
