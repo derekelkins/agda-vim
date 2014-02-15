@@ -26,7 +26,10 @@ runtime agda-utf8.vim
 set makeprg=agda\ --vim\ %
 set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
+
+
 if has('python') 
+
 
 function! s:LogAgda(name, text, append)
     let agdawinnr = bufwinnr('__Agda__')
@@ -368,6 +371,7 @@ command! -nargs=0 Metas python sendCommand('Cmd_metas')
 command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
 command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
 command! -nargs=1 SetRewriteMode python setRewriteMode("<args>")
+
 nmap <buffer> <LocalLeader>l :Reload<CR>
 nmap <buffer> <LocalLeader>t :call Infer()<CR>
 nmap <buffer> <LocalLeader>r :call Refine("False")<CR>
@@ -378,8 +382,21 @@ nmap <buffer> <LocalLeader>a :call Auto()<CR>
 nmap <buffer> <LocalLeader>e :call Context()<CR>
 nmap <buffer> <LocalLeader>n :call Normalize("False")<CR>
 nmap <buffer> <LocalLeader>N :call Normalize("True")<CR>
-nmap <buffer> <LocalLeader>m :call ShowModule()<CR>
+nmap <buffer> <LocalLeader>M :call ShowModule()<CR>
+nmap <buffer> <LocalLeader>m :Metas<CR>
+
+" Show/reload metas
+nmap <buffer> <C-e> :Metas<CR>
+imap <buffer> <C-e> <C-o>:Metas<CR>
+
+" Go to next/previous meta
+nmap <buffer> <silent> <C-g>  :let _s=@/<CR>/ {!\\| ?<CR>:let @/=_s<CR>2l
+imap <buffer> <silent> <C-g>  <C-o>:let _s=@/<CR><C-o>/ {!\\| ?<CR><C-o>:let @/=_s<CR><C-o>2l
+
+nmap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
+imap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
 
 Reload
+
 
 endif
