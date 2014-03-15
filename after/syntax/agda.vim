@@ -18,13 +18,17 @@ endfunction
 au QuickfixCmdPost make call ReloadSyntax()|call Load(1)
 set autowrite
 
-if exists("g:agda_stdlibpath")
-    let &makeprg = "agda --vim " . "-i " . g:agda_stdlibpath . " -i " . "." . " %"
-    let g:agdavim_agda_includepathlist = '"' . g:agda_stdlibpath . '"' . ', "."'
+
+if exists("g:agda_extraincpaths")
+    let g:agdavim_agda_includepathlist_unquoted = ['.'] + g:agda_extraincpaths
 else
-    set makeprg=agda\ --vim\ %
-    let g:agdavim_agda_includepathlist = ''
+    let g:agdavim_agda_includepathlist_unquoted = ['.']
 endif
+
+let g:agdavim_agda_includepathlist = deepcopy(g:agdavim_agda_includepathlist_unquoted)
+call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
+let &makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
+
 
 runtime agda-utf8.vim
 
@@ -109,6 +113,8 @@ goals = {}
 
 rewriteMode = "Normalised"
 
+incpaths_str = ",".join(vim.eval("g:agdavim_agda_includepathlist"))
+
 def setRewriteMode(mode):
     global rewriteMode
     mode = mode.strip()
@@ -168,7 +174,6 @@ def getOutput():
 
 def interpretResponse(responses, quiet = False):
     for response in responses:
-        # print response
         if response.startswith('(agda2-info-action '):
             if quiet and '*Error*' in response: vim.command('cwindow')
             if quiet: continue
@@ -184,14 +189,14 @@ def interpretResponse(responses, quiet = False):
             start = line.rindex('{', 0, col) + 1
             end = line.index('}', col)
             vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
-            sendCommand('Cmd_load "%s" [' + vim.eval("g:agdavim_agda_includepathlist") + ']' % f, quiet = quiet)
+            sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = quiet)
             break
         elif "(agda2-make-case-action '" in response:
             response = response.replace("?", "{!   !}") # this probably isn't safe
             cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action '")+24:])
             row = vim.current.window.cursor[0]
             vim.current.buffer[row-1:row] = cases
-            sendCommand('Cmd_load "%s" [' + vim.eval("g:agdavim_agda_includepathlist") + ']' % f, quiet = quiet)
+            sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = quiet)
             break
         elif response.startswith('(agda2-give-action '):
             response = response.replace("?", "{!   !}")
@@ -255,7 +260,7 @@ function! Load(quiet)
 python << EOF
 import vim
 f = vim.current.buffer.name;
-sendCommand('Cmd_load "%s" [' + vim.eval("g:agdavim_agda_includepathlist") + ']' % f, quiet = int(vim.eval('a:quiet')) == 1)
+sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = int(vim.eval('a:quiet')) == 1)
 EOF
 endfunction
 
