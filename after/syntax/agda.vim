@@ -9,24 +9,36 @@ function! ReloadSyntax()
     endif
     runtime syntax/agda.vim
 endfunction
-
 call ReloadSyntax()
 
 function! Load(quiet)
-    " Do nothing.  Overidden below with a Python function if python plugins
-    " are supported.
+    " Do nothing.  Overidden below with a Python function if python is supported.
 endfunction
 
-" map ,rs :call ReloadSyntax()<CR> " Just do :make instead
 au QuickfixCmdPost make call ReloadSyntax()|call Load(1)
 set autowrite
 
+
+if exists("g:agda_extraincpaths")
+    let g:agdavim_agda_includepathlist_unquoted = ['.'] + g:agda_extraincpaths
+else
+    let g:agdavim_agda_includepathlist_unquoted = ['.']
+endif
+
+let g:agdavim_agda_includepathlist = deepcopy(g:agdavim_agda_includepathlist_unquoted)
+call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
+let &makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
+
+
 runtime agda-utf8.vim
 
-set makeprg=agda\ --vim\ %
+
 set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
+
+
 if has('python') 
+
 
 function! s:LogAgda(name, text, append)
     let agdawinnr = bufwinnr('__Agda__')
@@ -87,6 +99,7 @@ function! s:LogAgda(name, text, append)
     let &eventignore = eventignore_save
 endfunction    
 
+
 python << EOF
 import vim
 import re
@@ -99,6 +112,8 @@ agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subproce
 goals = {}
 
 rewriteMode = "Normalised"
+
+incpaths_str = ",".join(vim.eval("g:agdavim_agda_includepathlist"))
 
 def setRewriteMode(mode):
     global rewriteMode
@@ -159,7 +174,6 @@ def getOutput():
 
 def interpretResponse(responses, quiet = False):
     for response in responses:
-        # print response
         if response.startswith('(agda2-info-action '):
             if quiet and '*Error*' in response: vim.command('cwindow')
             if quiet: continue
@@ -175,14 +189,14 @@ def interpretResponse(responses, quiet = False):
             start = line.rindex('{', 0, col) + 1
             end = line.index('}', col)
             vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
-            sendCommand('Cmd_load "%s" []' % f, quiet = quiet)
+            sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = quiet)
             break
         elif "(agda2-make-case-action '" in response:
             response = response.replace("?", "{!   !}") # this probably isn't safe
             cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action '")+24:])
             row = vim.current.window.cursor[0]
             vim.current.buffer[row-1:row] = cases
-            sendCommand('Cmd_load "%s" []' % f, quiet = quiet)
+            sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = quiet)
             break
         elif response.startswith('(agda2-give-action '):
             response = response.replace("?", "{!   !}")
@@ -246,7 +260,7 @@ function! Load(quiet)
 python << EOF
 import vim
 f = vim.current.buffer.name;
-sendCommand('Cmd_load "%s" []' % f, quiet = int(vim.eval('a:quiet')) == 1)
+sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = int(vim.eval('a:quiet')) == 1)
 EOF
 endfunction
 
@@ -368,6 +382,7 @@ command! -nargs=0 Metas python sendCommand('Cmd_metas')
 command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
 command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
 command! -nargs=1 SetRewriteMode python setRewriteMode("<args>")
+
 nmap <buffer> <LocalLeader>l :Reload<CR>
 nmap <buffer> <LocalLeader>t :call Infer()<CR>
 nmap <buffer> <LocalLeader>r :call Refine("False")<CR>
@@ -378,8 +393,21 @@ nmap <buffer> <LocalLeader>a :call Auto()<CR>
 nmap <buffer> <LocalLeader>e :call Context()<CR>
 nmap <buffer> <LocalLeader>n :call Normalize("False")<CR>
 nmap <buffer> <LocalLeader>N :call Normalize("True")<CR>
-nmap <buffer> <LocalLeader>m :call ShowModule()<CR>
+nmap <buffer> <LocalLeader>M :call ShowModule()<CR>
+nmap <buffer> <LocalLeader>m :Metas<CR>
+
+" Show/reload metas
+nmap <buffer> <C-e> :Metas<CR>
+imap <buffer> <C-e> <C-o>:Metas<CR>
+
+" Go to next/previous meta
+nmap <buffer> <silent> <C-g>  :let _s=@/<CR>/ {!\\| ?<CR>:let @/=_s<CR>2l
+imap <buffer> <silent> <C-g>  <C-o>:let _s=@/<CR><C-o>/ {!\\| ?<CR><C-o>:let @/=_s<CR><C-o>2l
+
+nmap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
+imap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
 
 Reload
+
 
 endif
