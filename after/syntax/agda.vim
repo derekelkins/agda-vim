@@ -241,8 +241,11 @@ def replaceHole(replacement):
 def getHoleBodyAtCursor():
     (r, c) = vim.current.window.cursor
     line = vim.current.line
-    if line[c] == "?":
-        return ("?", findGoal(r, c+1))
+    try:
+        if line[c] == "?":
+            return ("?", findGoal(r, c+1))
+    except IndexError:
+        return None
     try: # handle virtual space better
         mo = None
         for mo in re.finditer(r"{!", line[:min(len(line),c+2)]): pass
