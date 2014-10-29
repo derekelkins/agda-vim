@@ -94,8 +94,8 @@ imap <LocalLeader>dots …
 imap <LocalLeader>down ↓
 imap <LocalLeader>downtri ▼
 imap <LocalLeader>Down ⇓
-imap <LocalLeader>dunion ⨃
-imap <LocalLeader>du ⨃
+imap <LocalLeader>dunion ⊎
+imap <LocalLeader>du ⊎
 imap <LocalLeader>ell ℓ
 imap <LocalLeader>empty ∅
 imap <LocalLeader>equiv ≡
@@ -508,8 +508,8 @@ cmap <LocalLeader>dots …
 cmap <LocalLeader>down ↓
 cmap <LocalLeader>downtri ▼
 cmap <LocalLeader>Down ⇓
-cmap <LocalLeader>dunion ⨃
-cmap <LocalLeader>du ⨃
+cmap <LocalLeader>dunion ⊎
+cmap <LocalLeader>du ⊎
 cmap <LocalLeader>ell ℓ
 cmap <LocalLeader>empty ∅
 cmap <LocalLeader>equiv ≡
