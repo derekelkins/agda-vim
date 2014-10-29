@@ -18,7 +18,6 @@ endfunction
 au QuickfixCmdPost make call ReloadSyntax()|call Load(1)
 set autowrite
 
-
 if exists("g:agda_extraincpaths")
     let g:agdavim_agda_includepathlist_unquoted = ['.'] + g:agda_extraincpaths
 else
@@ -29,16 +28,11 @@ let g:agdavim_agda_includepathlist = deepcopy(g:agdavim_agda_includepathlist_unq
 call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
 let &makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
 
-
 runtime agda-utf8.vim
-
 
 set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
-
-
 if has('python') 
-
 
 function! s:LogAgda(name, text, append)
     let agdawinnr = bufwinnr('__Agda__')
@@ -195,7 +189,8 @@ def interpretResponse(responses, quiet = False):
             response = response.replace("?", "{!   !}") # this probably isn't safe
             cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action '")+24:])
             row = vim.current.window.cursor[0]
-            vim.current.buffer[row-1:row] = cases
+            prefix = re.match(r'[ \t]*', vim.current.line).group()
+            vim.current.buffer[row-1:row] = [prefix + case for case in cases]
             sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = quiet)
             break
         elif response.startswith('(agda2-give-action '):
