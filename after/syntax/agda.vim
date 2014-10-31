@@ -100,7 +100,7 @@ import re
 import subprocess
 
 # start Agda
-# I'm pretty sure this will start an agda process per buffer which is less than desirable...
+# TODO: I'm pretty sure this will start an agda process per buffer which is less than desirable...
 agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE)
 
 goals = {}
@@ -180,8 +180,8 @@ def interpretResponse(responses, quiet = False):
             cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action-extendlam '")+34:])
             col = vim.current.window.cursor[1]
             line = vim.current.line
-            start = line.rindex('{', 0, col) + 1
-            end = line.index('}', col)
+            start = [mo for mo in re.finditer(r'{[^!]', line[:col])][-1].end() - 1
+            end = re.search(r'[^!]}', line[col:]).start() + col + 1
             vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
             sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = quiet)
             break
@@ -218,6 +218,7 @@ def sendCommand(arg, quiet=False):
 #    return line[start:end]
 
 def replaceHole(replacement):
+    rep = replacement.replace('\n', ' ').replace('    ', ';') # TODO: This probably needs to be handled better
     (r, c) = vim.current.window.cursor
     line = vim.current.line
     if line[c] == "?":
@@ -231,7 +232,7 @@ def replaceHole(replacement):
             end = re.search(r"!}", line[max(0,c-1):]).end() + max(0,c-1)
         except AttributeError:
             return
-    vim.current.line = line[:start] + replacement + line[end:]
+    vim.current.line = line[:start] + rep + line[end:]
 
 def getHoleBodyAtCursor():
     (r, c) = vim.current.window.cursor
@@ -403,6 +404,5 @@ nmap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
 imap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
 
 Reload
-
 
 endif
