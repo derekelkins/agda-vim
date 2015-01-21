@@ -129,14 +129,17 @@ def RestartAgda():
 
 def findGoals(goalList):
     global goals
+
     goals = {}
     lines = vim.current.buffer
     row = 1
+    agdaHolehlID = vim.eval('hlID("agdaHole")')
+    extraEval = 1
     for line in lines:
         start = 0
         while start != -1:
-            qstart = line.find('?', start)
-            hstart = line.find('{!', start)
+            qstart = line.find("?", start)
+            hstart = line.find("{!", start)
             if qstart == -1:
                 start = hstart
             elif hstart == -1:
@@ -145,7 +148,13 @@ def findGoals(goalList):
                 start = min(hstart, qstart)
             if start != -1:
                 start = start + 1
-                if vim.eval('synID("%d", "%d", 0)' % (row, start)) == vim.eval('hlID("agdaHole")'):
+
+                # This extra eval causes it to refresh the highlighting or something. TODO: Figure this out.
+                if extraEval:
+                    vim.eval('synID("%d", "%d", 0)' % (row, start))
+                    extraEval = 0
+
+                if vim.eval('synID("%d", "%d", 0)' % (row, start)) == agdaHolehlID:
                     goals[goalList.pop(0)] = (row, start)
             if len(goalList) == 0: break
         if len(goalList) == 0: break
