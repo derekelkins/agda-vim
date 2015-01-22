@@ -324,7 +324,7 @@ if result is None:
 elif result[1] is None:
     print "Goal not loaded"
 else:
-    sendCommand('Cmd_auto %d noRange "%s"' % (result[1], result[0]))
+    sendCommand('Cmd_auto %d noRange "%s"' % (result[1], result[0] if result[0] != "?" else ""))
 EOF
 endfunction
 
