@@ -2,6 +2,10 @@ Version 0.1.0
 
 A simple vim mode for interactively editing Agda code.
 
+For a demonstration see:
+
+[![agda-vim Introduction on YouTube](http://img.youtube.com/vi/i7Btts-duZw/0.jpg)](https://www.youtube.com/watch?v=i7Btts-duZw)
+
 It incorporates the syntax and unicode input files from <http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.VIMEditing>
 but extends them with support for interacting with the Agda process in the same manner as the emacs mode.  In addition,
 it sets Agda as the make program to automatically generate and load the local vim highlighting files and to jump
@@ -12,7 +16,7 @@ interacts via the same interface emacs uses, though a lot of the logic is in the
 supported mode, so there's no guarantee it will work with different versions of Agda.  I've currently used it with
 Agda 2.3.2.1 through 2.4.2.2.  I have not tested Literate Agda files at all and would be a bit surprised if they worked.
 
-This currently does not use any of the vim "package" formats.  Copying the vim subfolder into your .vim file
+This currently does not use any of the vim "package" formats.  Copying the files into your .vim folder
 and adding the following line to filetypes.vim should be adequate:
 
     au BufNewFile,BufRead *.agda setf agda
