@@ -130,11 +130,12 @@ def RestartAgda():
 def findGoals(goalList):
     global goals
 
+    vim.command('syn sync fromstart') # TODO: This sholud become obsolete given good sync rules in the syntax file.
+
     goals = {}
     lines = vim.current.buffer
     row = 1
     agdaHolehlID = vim.eval('hlID("agdaHole")')
-    extraEval = 1
     for line in lines:
         start = 0
         while start != -1:
@@ -149,16 +150,13 @@ def findGoals(goalList):
             if start != -1:
                 start = start + 1
 
-                # This extra eval causes it to refresh the highlighting or something. TODO: Figure this out.
-                if extraEval:
-                    vim.eval('synID("%d", "%d", 0)' % (row, start))
-                    extraEval = 0
-
                 if vim.eval('synID("%d", "%d", 0)' % (row, start)) == agdaHolehlID:
                     goals[goalList.pop(0)] = (row, start)
             if len(goalList) == 0: break
         if len(goalList) == 0: break
         row = row + 1
+
+    vim.command('syn sync clear') # TODO: This wipes out any sync rules and should be removed if good sync rules are added to the syntax file.
 
 def findGoal(row, col):
     global goals
