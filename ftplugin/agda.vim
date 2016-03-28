@@ -32,7 +32,18 @@ runtime agda-utf8.vim
 
 set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
-if has('python') 
+function! s:UsingPython2()
+  if has('python')
+    return 1
+  endif
+  return 0
+endfunction
+
+let s:using_python2 = s:UsingPython2()
+let s:python_until_eof = s:using_python2 ? 'python << EOF' : 'python3 << EOF'
+let s:python_cmd = s:using_python2 ? 'py ' : 'py3 '
+
+if has('python') || has('python3')
 
 function! s:LogAgda(name, text, append)
     let agdawinnr = bufwinnr('__Agda__')
@@ -94,14 +105,14 @@ function! s:LogAgda(name, text, append)
 endfunction    
 
 
-python << EOF
+exec s:python_until_eof
 import vim
 import re
 import subprocess
 
 # start Agda
 # TODO: I'm pretty sure this will start an agda process per buffer which is less than desirable...
-agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE)
+agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
 
 goals = {}
 
@@ -125,7 +136,7 @@ def promptUser(msg):
 
 def RestartAgda():
     global agda
-    agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE)
+    agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
 
 def findGoals(goalList):
     global goals
@@ -160,7 +171,7 @@ def findGoals(goalList):
 
 def findGoal(row, col):
     global goals
-    for item in goals.iteritems():
+    for item in goals.items():
         if item[1][0] == row and item[1][1] == col:
             return item[0]
     return None
@@ -263,7 +274,7 @@ def getHoleBodyAtCursor():
 EOF
 
 function! Load(quiet)
-python << EOF
+exec s:python_until_eof
 import vim
 f = vim.current.buffer.name;
 sendCommand('Cmd_load "%s" [%s]' % (f, incpaths_str), quiet = int(vim.eval('a:quiet')) == 1)
@@ -271,13 +282,13 @@ EOF
 endfunction
 
 function! Give()
-python << EOF
+exec s:python_until_eof
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
-    print "No hole under the cursor"
+    print("No hole under the cursor")
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 elif result[0] == "?":
     sendCommand('Cmd_give %d noRange "%s"' % (result[1], promptUser("Enter expression: ")))
 else:
@@ -286,13 +297,13 @@ EOF
 endfunction
 
 function! MakeCase()
-python << EOF
+exec s:python_until_eof
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
-    print "No hole under the cursor"
+    print("No hole under the cursor")
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 elif result[0] == "?":
     sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], promptUser("Make case on: ")))
 else:
@@ -301,77 +312,77 @@ EOF
 endfunction
 
 function! Refine(unfoldAbstract)
-python << EOF
+exec s:python_until_eof
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
-    print "No hole under the cursor"
+    print("No hole under the cursor")
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 else:
     sendCommand('Cmd_refine_or_intro %s %d noRange "%s"' % (vim.eval('a:unfoldAbstract'), result[1], result[0]))
 EOF
 endfunction
 
 function! Auto()
-python << EOF
+exec s:python_until_eof
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
-    print "No hole under the cursor"
+    print("No hole under the cursor")
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 else:
     sendCommand('Cmd_auto %d noRange "%s"' % (result[1], result[0] if result[0] != "?" else ""))
 EOF
 endfunction
 
 function! Context()
-python << EOF
+exec s:python_until_eof
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
     print "No hole under the cursor"
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 else:
     sendCommand('Cmd_goal_type_context_infer %s %d noRange "%s"' % (rewriteMode, result[1], result[0]))
 EOF
 endfunction
 
 function! Infer()
-python << EOF
+exec s:python_until_eof
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
     sendCommand('Cmd_infer_toplevel %s "%s"' % (rewriteMode, promptUser("Enter expression: ")))
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 else:
     sendCommand('Cmd_infer %s %d noRange "%s"' % (rewriteMode, result[1], result[0]))
 EOF
 endfunction
 
 function! Normalize(unfoldAbstract)
-python << EOF
+exec s:python_until_eof
 import vim
 result = getHoleBodyAtCursor()
 if result is None:
     sendCommand('Cmd_compute_toplevel %s "%s"' % (vim.eval('a:unfoldAbstract'), promptUser("Enter expression: ")))
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 else:
     sendCommand('Cmd_compute %s %d noRange "%s"' % (vim.eval('a:unfoldAbstract'), result[1], result[0]))
 EOF
 endfunction
 
 function! ShowModule()
-python << EOF
+exec s:python_until_eof
 result = getHoleBodyAtCursor()
 if result is None:
     sendCommand('Cmd_show_module_contents_toplevel "%s"' % promptUser("Enter module name: "))
 elif result[1] is None:
-    print "Goal not loaded"
+    print("Goal not loaded")
 else:
     sendCommand('Cmd_show_module_contents %d noRange "%s"' % (result[1], result[0]))
 EOF
@@ -379,15 +390,15 @@ endfunction
 
 command! -nargs=0 Load call Load(0)
 command! -nargs=0 Reload silent! make!|redraw!
-command! -nargs=0 RestartAgda python RestartAgda()
-command! -nargs=0 ShowImplicitArguments python sendCommand('ShowImplicitArgs True')
-command! -nargs=0 HideImplicitArguments python sendCommand('ShowImplicitArgs False')
-command! -nargs=0 ToggleImplicitArguments python sendCommand('ToggleImplicitArgs')
-command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
-command! -nargs=0 Metas python sendCommand('Cmd_metas')
-command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
-command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
-command! -nargs=1 SetRewriteMode python setRewriteMode("<args>")
+command! -nargs=0 RestartAgda exec s:python_cmd 'RestartAgda()'
+command! -nargs=0 ShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
+command! -nargs=0 HideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
+command! -nargs=0 ToggleImplicitArguments exec s:python_cmd "sendCommand('ToggleImplicitArgs')"
+command! -nargs=0 Constraints exec s:python_cmd "sendCommand('Cmd_constraints')"
+command! -nargs=0 Metas exec s:python_cmd "sendCommand('Cmd_metas')"
+command! -nargs=0 SolveAll exec s:python_cmd "sendCommand('Cmd_solveAll')"
+command! -nargs=1 ShowModule exec s:python_cmd "sendCommand('Cmd_show_module_contents_toplevel \"%s\"' % '<args>')"
+command! -nargs=1 SetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
 
 nmap <buffer> <LocalLeader>l :Reload<CR>
 nmap <buffer> <LocalLeader>t :call Infer()<CR>
