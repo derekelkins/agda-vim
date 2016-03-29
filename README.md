@@ -34,16 +34,18 @@ are made.
 The commands and mappings as defined currently are below:
 
     command! -nargs=0 Load call Load(0)
+    command! -nargs=0 AgdaVersion call AgdaVersion(0)
     command! -nargs=0 Reload silent! make!|redraw!
-    command! -nargs=0 RestartAgda python RestartAgda()
-    command! -nargs=0 ShowImplicitArguments python sendCommand('ShowImplicitArgs True')
-    command! -nargs=0 HideImplicitArguments python sendCommand('ShowImplicitArgs False')
-    command! -nargs=0 ToggleImplicitArguments python sendCommand('ToggleImplicitArgs')
-    command! -nargs=0 Constraints python sendCommand('Cmd_constraints')
-    command! -nargs=0 Metas python sendCommand('Cmd_metas')
-    command! -nargs=0 SolveAll python sendCommand('Cmd_solveAll')
-    command! -nargs=1 ShowModule python sendCommand('Cmd_show_module_contents_toplevel "%s"' % "<args>")
-    command! -nargs=1 SetRewriteMode python setRewriteMode("<args>")
+    command! -nargs=0 RestartAgda exec s:python_cmd 'RestartAgda()'
+    command! -nargs=0 ShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
+    command! -nargs=0 HideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
+    command! -nargs=0 ToggleImplicitArguments exec s:python_cmd "sendCommand('ToggleImplicitArgs')"
+    command! -nargs=0 Constraints exec s:python_cmd "sendCommand('Cmd_constraints')"
+    command! -nargs=0 Metas exec s:python_cmd "sendCommand('Cmd_metas')"
+    command! -nargs=0 SolveAll exec s:python_cmd "sendCommand('Cmd_solveAll')"
+    command! -nargs=1 ShowModule call ShowModule(<args>)
+    command! -nargs=1 WhyInScope call WhyInScope(<args>)
+    command! -nargs=1 SetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
 
     nmap <buffer> <LocalLeader>l :Reload<CR>
     nmap <buffer> <LocalLeader>t :call Infer()<CR>
@@ -55,7 +57,8 @@ The commands and mappings as defined currently are below:
     nmap <buffer> <LocalLeader>e :call Context()<CR>
     nmap <buffer> <LocalLeader>n :call Normalize("False")<CR>
     nmap <buffer> <LocalLeader>N :call Normalize("True")<CR>
-    nmap <buffer> <LocalLeader>M :call ShowModule()<CR>
+    nmap <buffer> <LocalLeader>M :call ShowModule('')<CR>
+    nmap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
     nmap <buffer> <LocalLeader>m :Metas<CR>
 
     " Show/reload metas
