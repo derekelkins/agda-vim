@@ -136,8 +136,6 @@ def escape(s):
 def unescape(s):
     return s.replace('\\\\','\x00').replace('\\"', '"').replace('\\n','\n').replace('\x00', '\\') # hacktastic
 
-incpaths_str = ",".join(vim.eval("g:agdavim_agda_includepathlist"))
-
 def setRewriteMode(mode):
     global rewriteMode
     mode = mode.strip()
@@ -226,8 +224,8 @@ def interpretResponse(responses, quiet = False):
             start = [mo for mo in re.finditer(r'{[^!]', line[:col])][-1].end() - 1
             end = re.search(r'[^!]}', line[col:]).start() + col + 1
             vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
-            f = vim.current.buffer.name;
-            sendCommand('Cmd_load "%s" [%s]' % (escape(f), incpaths_str), quiet = quiet)
+            f = vim.current.buffer.name
+            sendCommandLoad(f, quiet)
             break
         elif "(agda2-make-case-action '" in response:
             response = response.replace("?", "{!   !}") # this probably isn't safe
@@ -235,8 +233,8 @@ def interpretResponse(responses, quiet = False):
             row = vim.current.window.cursor[0]
             prefix = re.match(r'[ \t]*', vim.current.line).group()
             vim.current.buffer[row-1:row] = [prefix + case for case in cases]
-            f = vim.current.buffer.name;
-            sendCommand('Cmd_load "%s" [%s]' % (escape(f), incpaths_str), quiet = quiet)
+            f = vim.current.buffer.name
+            sendCommandLoad(f, quiet)
             break
         elif response.startswith('(agda2-give-action '):
             response = response.replace("?", "{!   !}")
@@ -247,10 +245,18 @@ def interpretResponse(responses, quiet = False):
 
 def sendCommand(arg, quiet=False):
     vim.command(':silent! write')
-    f = vim.current.buffer.name;
+    f = vim.current.buffer.name
     # The x is a really hacky way of getting a consistent final response.  Namely, "cannot read"
     agda.stdin.write('IOTCM "%s" None Indirect (%s)\nx\n' % (escape(f), arg))
     interpretResponse(getOutput(), quiet)
+
+def sendCommandLoad(file, quiet):
+    global agdaVersion
+    if agdaVersion < [2,5,0,0]: # in 2.5 they changed it so Cmd_load takes commandline arguments
+        incpaths_str = ",".join(vim.eval("g:agdavim_agda_includepathlist"))
+    else:
+        incpaths_str = "\"-i\"," + ",\"-i\",".join(vim.eval("g:agdavim_agda_includepathlist"))
+    sendCommand('Cmd_load "%s" [%s]' % (escape(file), incpaths_str), quiet = quiet)
 
 #def getIdentifierAtCursor():
 #    (r, c) = vim.current.window.cursor
@@ -314,8 +320,8 @@ endfunction
 function! Load(quiet)
 exec s:python_until_eof
 import vim
-f = vim.current.buffer.name;
-sendCommand('Cmd_load "%s" [%s]' % (escape(f), incpaths_str), quiet = int(vim.eval('a:quiet')) == 1)
+f = vim.current.buffer.name
+sendCommandLoad(f, int(vim.eval('a:quiet')) == 1)
 EOF
 endfunction
 

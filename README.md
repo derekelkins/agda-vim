@@ -1,4 +1,4 @@
-Version 0.9.0
+Version 0.9.1
 
 A vim mode for interactively editing Agda code with the features of the emacs mode.
 
@@ -14,7 +14,7 @@ to errors.  The make program is currently just `agda --vim`, i.e. it does not co
 This requires syntax highlighting to be turned on and, for the interactivity, Python plugins to be supported.  This
 interacts via the same interface emacs uses, though a lot of the logic is in the emacs mode.  This is not an officially
 supported mode, so there's no guarantee it will work with different versions of Agda.  I've currently used it with
-Agda 2.3.2.1 through 2.4.2.4.  I have not tested Literate Agda files at all and would be a bit surprised if they worked.
+Agda 2.3.2.1 through 2.5.1.0.  I have not tested Literate Agda files at all and would be a bit surprised if they worked.
 
 It should work as a Pathogen bundle and allegedly as a Vundle or NeoBundle and possibly others.  (I can vouch for Pathogen.)
 With Pathogen (and presumably the others) you should be able to simply `git clone` this whole repository into `.vim/bundle/`.
