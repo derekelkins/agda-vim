@@ -19,7 +19,7 @@ Agda 2.3.2.1 through 2.5.1.0.  I have not tested Literate Agda files at all and 
 It should work as a Pathogen bundle and allegedly as a Vundle or NeoBundle and possibly others.  (I can vouch for Pathogen.)
 With Pathogen (and presumably the others) you should be able to simply `git clone` this whole repository into `.vim/bundle/`.
 
-It should also work by just copying the file structure into your `.vim` folder and adding the following line to 
+It should also work by just copying the file structure into your `.vim` folder and adding the following line to
 `.vim/filetypes.vim`:
 
     au BufNewFile,BufRead *.agda setf agda
@@ -50,27 +50,27 @@ The commands and mappings as defined currently are below:
     command! -nargs=1 WhyInScope call WhyInScope(<args>)
     command! -nargs=1 SetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
 
-    nmap <buffer> <LocalLeader>l :Reload<CR>
-    nmap <buffer> <LocalLeader>t :call Infer()<CR>
-    nmap <buffer> <LocalLeader>r :call Refine("False")<CR>
-    nmap <buffer> <LocalLeader>R :call Refine("True")<CR>
-    nmap <buffer> <LocalLeader>g :call Give()<CR>
-    nmap <buffer> <LocalLeader>c :call MakeCase()<CR>
-    nmap <buffer> <LocalLeader>a :call Auto()<CR>
-    nmap <buffer> <LocalLeader>e :call Context()<CR>
-    nmap <buffer> <LocalLeader>n :call Normalize("False")<CR>
-    nmap <buffer> <LocalLeader>N :call Normalize("True")<CR>
-    nmap <buffer> <LocalLeader>M :call ShowModule('')<CR>
-    nmap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
-    nmap <buffer> <LocalLeader>m :Metas<CR>
+    nnoremap <buffer> <LocalLeader>l :Reload<CR>
+    nnoremap <buffer> <LocalLeader>t :call Infer()<CR>
+    nnoremap <buffer> <LocalLeader>r :call Refine("False")<CR>
+    nnoremap <buffer> <LocalLeader>R :call Refine("True")<CR>
+    nnoremap <buffer> <LocalLeader>g :call Give()<CR>
+    nnoremap <buffer> <LocalLeader>c :call MakeCase()<CR>
+    nnoremap <buffer> <LocalLeader>a :call Auto()<CR>
+    nnoremap <buffer> <LocalLeader>e :call Context()<CR>
+    nnoremap <buffer> <LocalLeader>n :call Normalize("False")<CR>
+    nnoremap <buffer> <LocalLeader>N :call Normalize("True")<CR>
+    nnoremap <buffer> <LocalLeader>M :call ShowModule('')<CR>
+    nnoremap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
+    nnoremap <buffer> <LocalLeader>m :Metas<CR>
 
     " Show/reload metas
-    nmap <buffer> <C-e> :Metas<CR>
-    imap <buffer> <C-e> <C-o>:Metas<CR>
+    nnoremap <buffer> <C-e> :Metas<CR>
+    inoremap <buffer> <C-e> <C-o>:Metas<CR>
 
     " Go to next/previous meta
-    nmap <buffer> <silent> <C-g>  :let _s=@/<CR>/ {!\\| ?<CR>:let @/=_s<CR>2l
-    imap <buffer> <silent> <C-g>  <C-o>:let _s=@/<CR><C-o>/ {!\\| ?<CR><C-o>:let @/=_s<CR><C-o>2l
+    nnoremap <buffer> <silent> <C-g>  :let _s=@/<CR>/ {!\\| ?<CR>:let @/=_s<CR>2l
+    inoremap <buffer> <silent> <C-g>  <C-o>:let _s=@/<CR><C-o>/ {!\\| ?<CR><C-o>:let @/=_s<CR><C-o>2l
 
-    nmap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
-    imap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
+    nnoremap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
+    inoremap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
