@@ -28,7 +28,9 @@ let g:agdavim_agda_includepathlist = deepcopy(g:agdavim_agda_includepathlist_unq
 call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
 let &makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
 
-runtime agda-utf8.vim
+if !exists("g:agdavim_includeutf8_mappings") || g:agdavim_includeutf8_mappings
+    runtime agda-utf8.vim
+endif
 
 set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
