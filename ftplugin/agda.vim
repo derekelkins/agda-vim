@@ -141,7 +141,7 @@ def unescape(s):
 def setRewriteMode(mode):
     global rewriteMode
     mode = mode.strip()
-    if mode not in ["AsIs", "Normalised", "HeadNormal", "Instantiated"]:
+    if mode not in ["AsIs", "Normalised", "Simplified", "HeadNormal", "Instantiated"]:
         rewriteMode = "Normalised"
     else:
         rewriteMode = mode
@@ -409,9 +409,14 @@ else:
 EOF
 endfunction
 
+" As of 2.5.2, the options are "DefaultCompute", "IgnoreAbstract", "UseShowInstance"
 function! Normalize(unfoldAbstract)
 exec s:python_until_eof
 import vim
+
+if agdaVersion < [2,5,2,0]:
+    unfoldAbstract = str(unfoldAbstract == "DefaultCompute")
+
 result = getHoleBodyAtCursor()
 if result is None:
     sendCommand('Cmd_compute_toplevel %s "%s"' % (vim.eval('a:unfoldAbstract'), escape(promptUser("Enter expression: "))))
