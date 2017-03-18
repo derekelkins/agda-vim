@@ -207,6 +207,11 @@ def parseVersion(versionString):
     global agdaVersion
     agdaVersion = [int(c) for c in versionString[12:].split('.')]
 
+def compareVersion(a, b, compare):
+    padA = max(0, len(a) - len(b))
+    padB = max(0, len(b) - len(a))
+    return compare((a + [0]*padA), b + [0]*padB)
+
 def interpretResponse(responses, quiet = False):
     for response in responses:
         if response.startswith('(agda2-info-action '):
@@ -413,17 +418,20 @@ endfunction
 function! Normalize(unfoldAbstract)
 exec s:python_until_eof
 import vim
+import operator
 
-if agdaVersion < [2,5,2,0]:
+unfoldAbstract = vim.eval("a:unfoldAbstract")
+
+if compareVersion([2,5,2,0], agdaVersion, operator.lt):
     unfoldAbstract = str(unfoldAbstract == "DefaultCompute")
 
 result = getHoleBodyAtCursor()
 if result is None:
-    sendCommand('Cmd_compute_toplevel %s "%s"' % (vim.eval('a:unfoldAbstract'), escape(promptUser("Enter expression: "))))
+    sendCommand('Cmd_compute_toplevel %s "%s"' % (unfoldAbstract, escape(promptUser("Enter expression: "))))
 elif result[1] is None:
     print("Goal not loaded")
 else:
-    sendCommand('Cmd_compute %s %d noRange "%s"' % (vim.eval('a:unfoldAbstract'), result[1], escape(result[0])))
+    sendCommand('Cmd_compute %s %d noRange "%s"' % (unfoldAbstract, result[1], escape(result[0])))
 EOF
 endfunction
 
