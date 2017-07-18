@@ -239,7 +239,7 @@ def interpretResponse(responses, quiet = False):
                 starts = [mo for mo in re.finditer(r'{[^!]', line[:col])]
                 if len(starts) == 0:
                     # Assume the case is on a line by itself.
-                    correction = 0
+                    correction = 1
                     starts = [mo for mo in re.finditer(r'^[ \t]*', line[:col])]
             start = starts[-1].end() - correction
 
