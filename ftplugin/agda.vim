@@ -228,8 +228,34 @@ def interpretResponse(responses, quiet = False):
             cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action-extendlam '")+34:])
             col = vim.current.window.cursor[1]
             line = vim.current.line
-            start = [mo for mo in re.finditer(r'{[^!]', line[:col])][-1].end() - 1
-            end = re.search(r'[^!]}', line[col:]).start() + col + 1
+
+            # TODO: The following logic is far from perfect.
+            # Look for a semicolon ending the previous case.
+            correction = 0
+            starts = [mo for mo in re.finditer(r';', line[:col])]
+            if len(starts) == 0:
+                # Look for the starting bracket of the extended lambda..
+                correction = 1
+                starts = [mo for mo in re.finditer(r'{[^!]', line[:col])]
+                if len(starts) == 0:
+                    # Assume the case is on a line by itself.
+                    correction = 0
+                    starts = [mo for mo in re.finditer(r'^[ \t]*', line[:col])]
+            start = starts[-1].end() - correction
+
+            # Look for a semicolon ending this case.
+            correction = 0
+            ends = re.search(r';', line[col:])
+            if ends == None:
+                # Look for the ending bracket of the extended lambda.
+                correction = 1
+                ends = re.search(r'[^!]}', line[col:])
+                if ends == None:
+                    # Assume the case is on a line by itself (or at least has nothing after it).
+                    correction = 0
+                    ends = re.search(r'[ \t]*$', line[col:])
+            end = ends.start() + col + correction
+
             vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
             f = vim.current.buffer.name
             sendCommandLoad(f, quiet)
