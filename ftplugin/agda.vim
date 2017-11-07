@@ -367,9 +367,9 @@ if result is None:
 elif result[1] is None:
     print("Goal not loaded")
 elif result[0] == "?":
-    sendCommand('Cmd_give %d noRange "%s"' % (result[1], escape(promptUser("Enter expression: "))))
+    sendCommand('Cmd_give WithoutForce %d noRange "%s"' % (result[1], escape(promptUser("Enter expression: "))))
 else:
-    sendCommand('Cmd_give %d noRange "%s"' % (result[1], escape(result[0])))
+    sendCommand('Cmd_give WithoutForce %d noRange "%s"' % (result[1], escape(result[0])))
 EOF
 endfunction
 
