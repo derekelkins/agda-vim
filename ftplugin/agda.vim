@@ -361,15 +361,23 @@ endfunction
 function! Give()
 exec s:python_until_eof
 import vim
+import operator
+
 result = getHoleBodyAtCursor()
+
+if compareVersion([2,5,3,0], agdaVersion, operator.lt):
+    useForce = ""
+else:
+    useForce = "WithoutForce" # or WithForce
+
 if result is None:
     print("No hole under the cursor")
 elif result[1] is None:
     print("Goal not loaded")
 elif result[0] == "?":
-    sendCommand('Cmd_give %d noRange "%s"' % (result[1], escape(promptUser("Enter expression: "))))
+    sendCommand('Cmd_give %s %d noRange "%s"' % (useForce, result[1], escape(promptUser("Enter expression: "))))
 else:
-    sendCommand('Cmd_give %d noRange "%s"' % (result[1], escape(result[0])))
+    sendCommand('Cmd_give %s %d noRange "%s"' % (useForce, result[1], escape(result[0])))
 EOF
 endfunction
 
