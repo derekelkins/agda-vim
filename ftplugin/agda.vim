@@ -365,7 +365,7 @@ import operator
 
 result = getHoleBodyAtCursor()
 
-if compareVersion([2,5,3,0], agdaVersion, operator.lt):
+if compareVersion(agdaVersion, [2,5,3,0], operator.lt):
     useForce = ""
 else:
     useForce = "WithoutForce" # or WithForce
