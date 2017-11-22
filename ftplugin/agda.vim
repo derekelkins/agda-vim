@@ -206,11 +206,7 @@ def getOutput():
 def parseVersion(versionString):
     global agdaVersion
     agdaVersion = [int(c) for c in versionString[12:].split('.')]
-
-def compareVersion(a, b, compare):
-    padA = max(0, len(a) - len(b))
-    padB = max(0, len(b) - len(a))
-    return compare((a + [0]*padA), b + [0]*padB)
+    agdaVersion = agdaVersion + [0]*max(0, 4-len(agdaVersion))
 
 def interpretResponse(responses, quiet = False):
     for response in responses:
@@ -361,11 +357,10 @@ endfunction
 function! Give()
 exec s:python_until_eof
 import vim
-import operator
 
 result = getHoleBodyAtCursor()
 
-if compareVersion(agdaVersion, [2,5,3,0], operator.lt):
+if agdaVersion < [2,5,3,0]:
     useForce = ""
 else:
     useForce = "WithoutForce" # or WithForce
@@ -452,11 +447,10 @@ endfunction
 function! Normalize(unfoldAbstract)
 exec s:python_until_eof
 import vim
-import operator
 
 unfoldAbstract = vim.eval("a:unfoldAbstract")
 
-if compareVersion([2,5,2,0], agdaVersion, operator.lt):
+if agdaVersion < [2,5,2,0]:
     unfoldAbstract = str(unfoldAbstract == "DefaultCompute")
 
 result = getHoleBodyAtCursor()
