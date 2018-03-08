@@ -535,6 +535,11 @@ command! -nargs=0 SolveAll exec s:python_cmd "sendCommand('Cmd_solveAll')"
 command! -nargs=1 ShowModule call ShowModule(<args>)
 command! -nargs=1 WhyInScope call WhyInScope(<args>)
 command! -nargs=1 SetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
+command! -nargs=0 SetRewriteModeAsIs exec s:python_cmd "setRewriteMode('AsIs')"
+command! -nargs=0 SetRewriteModeNormalised exec s:python_cmd "setRewriteMode('Normalised')"
+command! -nargs=0 SetRewriteModeSimplified exec s:python_cmd "setRewriteMode('Simplified')"
+command! -nargs=0 SetRewriteModeHeadNormal exec s:python_cmd "setRewriteMode('HeadNormal')"
+command! -nargs=0 SetRewriteModeInstantiated exec s:python_cmd "setRewriteMode('Instantiated')"
 
 nnoremap <buffer> <LocalLeader>l :Reload<CR>
 nnoremap <buffer> <LocalLeader>t :call Infer()<CR>
