@@ -1,4 +1,4 @@
-Version 0.11.0
+Version 0.12.0
 
 A vim mode for interactively editing Agda code with the features of the emacs mode.
 
@@ -62,6 +62,7 @@ The commands and mappings as defined currently are below:
     nnoremap <buffer> <LocalLeader>N :call Normalize("True")<CR>
     nnoremap <buffer> <LocalLeader>M :call ShowModule('')<CR>
     nnoremap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
+    nnoremap <buffer> <LocalLeader>h :call HelperFunction()<CR>
     nnoremap <buffer> <LocalLeader>m :Metas<CR>
 
     " Show/reload metas
