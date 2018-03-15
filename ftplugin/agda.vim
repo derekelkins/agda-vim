@@ -210,7 +210,7 @@ def parseVersion(versionString):
 
 def interpretResponse(responses, quiet = False):
     for response in responses:
-        if response.startswith('(agda2-info-action '):
+        if response.startswith('(agda2-info-action ') or response.startswith('(agda2-info-action-and-copy '):
             if quiet and '*Error*' in response: vim.command('cwindow')
             strings = re.findall(r'"((?:[^"\\]|\\.)*)"', response[19:])
             if strings[0] == '*Agda Version*':
@@ -505,6 +505,23 @@ else:
 EOF
 endfunction
 
+function! HelperFunction()
+exec s:python_until_eof
+import vim
+
+result = getHoleBodyAtCursor()
+
+if result is None:
+    print("No hole under the cursor")
+elif result[1] is None:
+    print("Goal not loaded")
+elif result[0] == "?":
+    sendCommand('Cmd_helper_function %s %d noRange "%s"' % (rewriteMode, result[1], escape(promptUser("Enter name for helper function: "))))
+else:
+    sendCommand('Cmd_helper_function %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
+EOF
+endfunction
+
 command! -nargs=0 Load call Load(0)
 command! -nargs=0 AgdaVersion call AgdaVersion(0)
 command! -nargs=0 Reload silent! make!|redraw!
@@ -531,6 +548,7 @@ nnoremap <buffer> <LocalLeader>n :call Normalize("IgnoreAbstract")<CR>
 nnoremap <buffer> <LocalLeader>N :call Normalize("DefaultCompute")<CR>
 nnoremap <buffer> <LocalLeader>M :call ShowModule('')<CR>
 nnoremap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
+nnoremap <buffer> <LocalLeader>h :call HelperFunction()<CR>
 nnoremap <buffer> <LocalLeader>m :Metas<CR>
 
 " Show/reload metas
