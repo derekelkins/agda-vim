@@ -205,7 +205,7 @@ def getOutput():
 
 def parseVersion(versionString):
     global agdaVersion
-    agdaVersion = [int(c) for c in versionString[12:].split('.')]
+    agdaVersion = [int(c) for c in versionString[12:].split("-")[0].split('.')]
     agdaVersion = agdaVersion + [0]*max(0, 4-len(agdaVersion))
 
 def interpretResponse(responses, quiet = False):
