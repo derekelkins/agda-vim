@@ -1,3 +1,7 @@
+setlocal iskeyword=33-126,192-255
+setlocal commentstring=--\ %s
+setlocal comments=s1fl:{-,mb:\ \ ,ex:-},:--
+
 " The ReloadSyntax function is reproduced from
 " http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.VIMEditing
 " the remainder is covered by the license described in LICENSE.
