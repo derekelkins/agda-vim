@@ -95,16 +95,18 @@ The commands and mappings as defined currently are below, as well as their Emacs
     nnoremap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
     inoremap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
 
+
 Some commonly used utf8 bindings are listed below, together with their emacs counterparts. For an exhaustive list,
 look in `agda-utf8.vim`.
+
 | utf-8 | agda-vim       | emacs             |
 |:-----:| -------------- | ----------------- |
 | →     | \to            | \to               |
 | ¬     | \neg           | \lnot             |
 | ∨     | \lor           | \or or vee        |
 | ∧     | \land          | \and or \wedge    |
-| ₁, ₂  | \1, \2         | \_1, \_2          |
-| ≡     | \equiv         | \equiv or \==     |
+| ₁, ₂  | \1, \2         | \\\_1, \\\_2      |
+| ≡     | \equiv         | \equiv or \\==    |
 | ⊤     | \top           | \top              |
 | ⊥     | \bot           | \bot              |
 | ×     | \times         | \times            |
