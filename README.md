@@ -34,7 +34,7 @@ are made, e.g. in your `.vimrc`:
 
     let maplocalleader = ","
 
-The commands and mappings as defined currently are below:
+The commands and mappings as defined currently are below, as well as their Emacs counterparts:
 
     command! -nargs=0 Load call Load(0)
     command! -nargs=0 AgdaVersion call AgdaVersion(0)
@@ -55,28 +55,60 @@ The commands and mappings as defined currently are below:
     command! -nargs=0 SetRewriteModeHeadNormal exec s:python_cmd "setRewriteMode('HeadNormal')"
     command! -nargs=0 SetRewriteModeInstantiated exec s:python_cmd "setRewriteMode('Instantiated')"
 
+    " C-c C-l -> \l
     nnoremap <buffer> <LocalLeader>l :Reload<CR>
+    " C-c C-d -> \t
     nnoremap <buffer> <LocalLeader>t :call Infer()<CR>
+    " C-c C-r -> \r
     nnoremap <buffer> <LocalLeader>r :call Refine("False")<CR>
     nnoremap <buffer> <LocalLeader>R :call Refine("True")<CR>
+    " C-c C-space -> \g
     nnoremap <buffer> <LocalLeader>g :call Give()<CR>
+    " C-c C-g -> \c
     nnoremap <buffer> <LocalLeader>c :call MakeCase()<CR>
+    " C-c C-a -> \a
     nnoremap <buffer> <LocalLeader>a :call Auto()<CR>
+    " C-c C-, -> \e
     nnoremap <buffer> <LocalLeader>e :call Context()<CR>
+    " C-u C-c C-n -> \n
     nnoremap <buffer> <LocalLeader>n :call Normalize("False")<CR>
+    " C-c C-n -> \N
     nnoremap <buffer> <LocalLeader>N :call Normalize("True")<CR>
     nnoremap <buffer> <LocalLeader>M :call ShowModule('')<CR>
+    " C-c C-w -> \y
     nnoremap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
     nnoremap <buffer> <LocalLeader>h :call HelperFunction()<CR>
+    " C-c C-? -> \m
     nnoremap <buffer> <LocalLeader>m :Metas<CR>
 
     " Show/reload metas
+    " C-c C-? -> C-e
     nnoremap <buffer> <C-e> :Metas<CR>
     inoremap <buffer> <C-e> <C-o>:Metas<CR>
 
     " Go to next/previous meta
+    " C-c C-f -> C-g
     nnoremap <buffer> <silent> <C-g>  :let _s=@/<CR>/ {!\\| ?<CR>:let @/=_s<CR>2l
     inoremap <buffer> <silent> <C-g>  <C-o>:let _s=@/<CR><C-o>/ {!\\| ?<CR><C-o>:let @/=_s<CR><C-o>2l
 
+    " C-c C-b -> C-y
     nnoremap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
     inoremap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
+
+
+Some commonly used utf8 bindings are listed below, together with their emacs counterparts. For an exhaustive list,
+look in `agda-utf8.vim`.
+
+| utf-8 | agda-vim       | emacs             |
+|:-----:| -------------- | ----------------- |
+| →     | \to            | \to               |
+| ¬     | \neg           | \lnot             |
+| ∨     | \lor           | \or or vee        |
+| ∧     | \land          | \and or \wedge    |
+| ₁, ₂  | \1, \2         | \\\_1, \\\_2      |
+| ≡     | \equiv         | \equiv or \\==    |
+| ⊤     | \top           | \top              |
+| ⊥     | \bot           | \bot              |
+| ×     | \times         | \times            |
+| ⊎     | \dunion        | \uplus            |
+| λ     | \l or lambda   | \Gl or \lambda    |
