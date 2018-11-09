@@ -413,7 +413,10 @@ if result is None:
 elif result[1] is None:
     print("Goal not loaded")
 else:
-    sendCommand('Cmd_auto %d noRange "%s"' % (result[1], escape(result[0]) if result[0] != "?" else ""))
+    if agdaVersion < [2,6,0,0]:
+        sendCommand('Cmd_auto %d noRange "%s"' % (result[1], escape(result[0]) if result[0] != "?" else ""))
+    else:
+        sendCommand('Cmd_autoOne %d noRange "%s"' % (result[1], escape(result[0]) if result[0] != "?" else ""))
 EOF
 endfunction
 
