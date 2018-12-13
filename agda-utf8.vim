@@ -63,6 +63,7 @@ imap <buffer> <LocalLeader>=? ≟
 imap <buffer> <LocalLeader>all ∀
 imap <buffer> <LocalLeader>always □
 imap <buffer> <LocalLeader>approx ≈
+imap <buffer> <LocalLeader>apprlimit ≐
 imap <buffer> <LocalLeader>bot ⊥
 imap <buffer> <LocalLeader>box □
 imap <buffer> <LocalLeader>boxdot ⊡
@@ -477,6 +478,7 @@ cmap <buffer> <LocalLeader>=? ≟
 cmap <buffer> <LocalLeader>all ∀
 cmap <buffer> <LocalLeader>always □
 cmap <buffer> <LocalLeader>approx ≈
+cmap <buffer> <LocalLeader>apprlimit ≐
 cmap <buffer> <LocalLeader>bot ⊥
 cmap <buffer> <LocalLeader>box □
 cmap <buffer> <LocalLeader>boxdot ⊡
