@@ -29,6 +29,10 @@ which could be added to your .vimrc.
 
     let g:agda_extraincpaths = ["/home/derek/haskell/agda-stdlib-0.8.1/src"]
 
+Support for go-to definition can be disabled which may speed up loads by putting the following in your `.vimrc`:
+
+    let g:agdavim_enable_goto_definition = 0
+
 In the commands below, the `<LocalLeader>` is set by setting `maplocalleader` which needs to occur before the mappings
 are made, e.g. in your `.vimrc`:
 
@@ -78,6 +82,8 @@ The commands and mappings as defined currently are below, as well as their Emacs
     " C-c C-w -> \y
     nnoremap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
     nnoremap <buffer> <LocalLeader>h :call HelperFunction()<CR>
+    " M-. -> \d
+    nnoremap <buffer> <LocalLeader>d :call GotoAnnotation()<CR>
     " C-c C-? -> \m
     nnoremap <buffer> <LocalLeader>m :Metas<CR>
 
