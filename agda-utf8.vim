@@ -160,7 +160,6 @@ imap <buffer> <LocalLeader>neq ≢
 imap <buffer> <LocalLeader>nexist ∄
 imap <buffer> <LocalLeader>none ∄
 imap <buffer> <LocalLeader>ni ∋
-imap <buffer> <LocalLeader>ni ∋
 imap <buffer> <LocalLeader>nin ∉
 imap <buffer> <LocalLeader>niso ≇
 imap <buffer> <LocalLeader>notin ∉
@@ -573,7 +572,6 @@ cmap <buffer> <LocalLeader>nequiv ≢
 cmap <buffer> <LocalLeader>neq ≢
 cmap <buffer> <LocalLeader>nexist ∄
 cmap <buffer> <LocalLeader>none ∄
-cmap <buffer> <LocalLeader>ni ∋
 cmap <buffer> <LocalLeader>ni ∋
 cmap <buffer> <LocalLeader>nin ∉
 cmap <buffer> <LocalLeader>niso ≇
