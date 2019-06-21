@@ -1,412 +1,448 @@
-" Combining marks
-noremap! <buffer> <LocalLeader>over`  ̀
-noremap! <buffer> <LocalLeader>over'  ́
-noremap! <buffer> <LocalLeader>over^  ̂
-noremap! <buffer> <LocalLeader>overv  ̌
-noremap! <buffer> <LocalLeader>over~  ̃
-noremap! <buffer> <LocalLeader>over-  ̄
-noremap! <buffer> <LocalLeader>over_  ̅
-noremap! <buffer> <LocalLeader>over–  ̅
-noremap! <buffer> <LocalLeader>over—  ̅
-noremap! <buffer> <LocalLeader>overcup  ̆
-noremap! <buffer> <LocalLeader>overcap  ̑
-noremap! <buffer> <LocalLeader>over.  ̇
-noremap! <buffer> <LocalLeader>over..  ̈
-noremap! <buffer> <LocalLeader>over"  ̈
-noremap! <buffer> <LocalLeader>over...  ⃛
-noremap! <buffer> <LocalLeader>overright.  ͘
-noremap! <buffer> <LocalLeader>overo  ̊
-noremap! <buffer> <LocalLeader>over``  ̏
-noremap! <buffer> <LocalLeader>over''  ̋
-noremap! <buffer> <LocalLeader>overvec  ⃑
-noremap! <buffer> <LocalLeader>vec  ⃑
-noremap! <buffer> <LocalLeader>overlvec  ⃐
-noremap! <buffer> <LocalLeader>lvec  ⃐
-noremap! <buffer> <LocalLeader>overarc  ⃕
-noremap! <buffer> <LocalLeader>overlarc  ⃔
-noremap! <buffer> <LocalLeader>overto  ⃗
-noremap! <buffer> <LocalLeader>overfrom  ⃖
-noremap! <buffer> <LocalLeader>overfromto  ⃡
-noremap! <buffer> <LocalLeader>over*  ⃰
-noremap! <buffer> <LocalLeader>under`  ̖
-noremap! <buffer> <LocalLeader>under'  ̗
-noremap! <buffer> <LocalLeader>under,  ̗
-noremap! <buffer> <LocalLeader>under.  ̣
-noremap! <buffer> <LocalLeader>under..  ̤
-noremap! <buffer> <LocalLeader>under"  ̤
-noremap! <buffer> <LocalLeader>undero  ̥
-noremap! <buffer> <LocalLeader>under-  ̱
-noremap! <buffer> <LocalLeader>under_  ̲
-noremap! <buffer> <LocalLeader>under–  ̲
-noremap! <buffer> <LocalLeader>under—  ̲
-noremap! <buffer> <LocalLeader>through~  ̴
-noremap! <buffer> <LocalLeader>through-  ̵
-noremap! <buffer> <LocalLeader>through_  ̶
-noremap! <buffer> <LocalLeader>through–  ̶
-noremap! <buffer> <LocalLeader>through—  ̶
-noremap! <buffer> <LocalLeader>through/  ̷
-noremap! <buffer> <LocalLeader>not  ̷
-noremap! <buffer> <LocalLeader>through?  ̸
-noremap! <buffer> <LocalLeader>Not  ̸
-noremap! <buffer> <LocalLeader>through\|  ⃒
-noremap! <buffer> <LocalLeader>throughshortmid  ⃓
-noremap! <buffer> <LocalLeader>througho  ⃘
+let s:cpo_save = &cpo
+set cpo&vim
 
-" Math
-noremap! <buffer> <LocalLeader>{{ ⦃
-noremap! <buffer> <LocalLeader>}} ⦄
-noremap! <buffer> <LocalLeader>: ∶
-noremap! <buffer> <LocalLeader>:: ∷
-noremap! <buffer> <LocalLeader>;  ﹔
-noremap! <buffer> <LocalLeader>.. ‥
-noremap! <buffer> <LocalLeader>=? ≟
-noremap! <buffer> <LocalLeader>all ∀
-noremap! <buffer> <LocalLeader>always □
-noremap! <buffer> <LocalLeader>approx ≈
-noremap! <buffer> <LocalLeader>bot ⊥
-noremap! <buffer> <LocalLeader>box □
-noremap! <buffer> <LocalLeader>boxdot ⊡
-noremap! <buffer> <LocalLeader>box. ⊡
-noremap! <buffer> <LocalLeader>boxminus ⊟
-noremap! <buffer> <LocalLeader>box- ⊟
-noremap! <buffer> <LocalLeader>boxplus ⊞
-noremap! <buffer> <LocalLeader>box+ ⊞
-noremap! <buffer> <LocalLeader>boxtimes ⊠
-noremap! <buffer> <LocalLeader>box* ⊠
-noremap! <buffer> <LocalLeader>bul •
-noremap! <buffer> <LocalLeader>C ℂ
-noremap! <buffer> <LocalLeader>cdot ∙
-noremap! <buffer> <LocalLeader>. ∙
-noremap! <buffer> <LocalLeader>cdots ⋯
-noremap! <buffer> <LocalLeader>check ✓
-noremap! <buffer> <LocalLeader>yes ✓
-noremap! <buffer> <LocalLeader>Check ✔
-noremap! <buffer> <LocalLeader>Yes ✔
-noremap! <buffer> <LocalLeader>circ ∘
-noremap! <buffer> <LocalLeader>clock ↻
-noremap! <buffer> <LocalLeader>cclock ↺
-noremap! <buffer> <LocalLeader>comp ∘
-noremap! <buffer> <LocalLeader>contra ↯
-noremap! <buffer> <LocalLeader>deg °
-noremap! <buffer> <LocalLeader>den ⟦⟧<left>
-noremap! <buffer> <LocalLeader>diamond ◇
-noremap! <buffer> <LocalLeader>dots …
-noremap! <buffer> <LocalLeader>down ↓
-noremap! <buffer> <LocalLeader>downtri ▼
-noremap! <buffer> <LocalLeader>Down ⇓
-noremap! <buffer> <LocalLeader>dunion ⊎
-noremap! <buffer> <LocalLeader>du ⊎
-noremap! <buffer> <LocalLeader>ell ℓ
-noremap! <buffer> <LocalLeader>empty ∅
-noremap! <buffer> <LocalLeader>equiv ≡
-noremap! <buffer> <LocalLeader>eq ≡
-noremap! <buffer> <LocalLeader>eventually ◇
-noremap! <buffer> <LocalLeader>exists ∃
-noremap! <buffer> <LocalLeader>flat ♭
-noremap! <buffer> <LocalLeader>fold ⦇⦈<left>
-noremap! <buffer> <LocalLeader>(\| ⦇
-noremap! <buffer> <LocalLeader>\|) ⦈
-noremap! <buffer> <LocalLeader>forall ∀
-noremap! <buffer> <LocalLeader>from ←
-noremap! <buffer> <LocalLeader><- ←
-noremap! <buffer> <LocalLeader>From ⇐
-noremap! <buffer> <LocalLeader>fromto ↔
-noremap! <buffer> <LocalLeader>Fromto ⇔
-noremap! <buffer> <LocalLeader>ge ≥
-noremap! <buffer> <LocalLeader>glub ⊓
-noremap! <buffer> <LocalLeader>iff ⇔
-noremap! <buffer> <LocalLeader>implies ⇒
-noremap! <buffer> <LocalLeader>impliedby ⇐
-noremap! <buffer> <LocalLeader>in ∈
-noremap! <buffer> <LocalLeader>infty ∞
-noremap! <buffer> <LocalLeader>inf ∞
-noremap! <buffer> <LocalLeader>int ∫
-noremap! <buffer> <LocalLeader>intersect ∩
-noremap! <buffer> <LocalLeader>iso ≅
-noremap! <buffer> <LocalLeader>join ⋈
-noremap! <buffer> <LocalLeader>land ∧
-noremap! <buffer> <LocalLeader>langle ⟨
-noremap! <buffer> <LocalLeader>lbrac ⟦
-noremap! <buffer> <LocalLeader>[[ ⟦
-noremap! <buffer> <LocalLeader>ldots …
-noremap! <buffer> <LocalLeader>ldown ⇃
-noremap! <buffer> <LocalLeader>leadsto ⇝
-noremap! <buffer> <LocalLeader>~> ⇝
-noremap! <buffer> <LocalLeader>le ≤
-noremap! <buffer> <LocalLeader>lift ⌊⌋<left>
-noremap! <buffer> <LocalLeader>floor ⌊⌋<left>
-noremap! <buffer> <LocalLeader>llangle ⟪
-noremap! <buffer> <LocalLeader>longto ⟶ 
-noremap! <buffer> <LocalLeader>-- ⟶ 
-noremap! <buffer> <LocalLeader>– ⟶ 
-noremap! <buffer> <LocalLeader>lor ∨
-noremap! <buffer> <LocalLeader>lower ⌈⌉<left>
-noremap! <buffer> <LocalLeader>ceil ⌈⌉<left>
-noremap! <buffer> <LocalLeader>lub ⊔
-noremap! <buffer> <LocalLeader>lup ↿
-noremap! <buffer> <LocalLeader>mapsto ↦
-noremap! <buffer> <LocalLeader>map ↦
-noremap! <buffer> <LocalLeader>mid ∣
-noremap! <buffer> <LocalLeader>models ⊨
-noremap! <buffer> <LocalLeader>\|= ⊨
-noremap! <buffer> <LocalLeader>N ℕ
-noremap! <buffer> <LocalLeader>ne ≠
-noremap! <buffer> <LocalLeader>nearrow ↗
-noremap! <buffer> <LocalLeader>Nearrow ⇗
-noremap! <buffer> <LocalLeader>neg ¬
-noremap! <buffer> <LocalLeader>/= ≠
-noremap! <buffer> <LocalLeader>nequiv ≢
-noremap! <buffer> <LocalLeader>neq ≢
-noremap! <buffer> <LocalLeader>nexist ∄
-noremap! <buffer> <LocalLeader>none ∄
-noremap! <buffer> <LocalLeader>ni ∋
-noremap! <buffer> <LocalLeader>nin ∉
-noremap! <buffer> <LocalLeader>niso ≇
-noremap! <buffer> <LocalLeader>notin ∉
-noremap! <buffer> <LocalLeader>nwarrow ↖
-noremap! <buffer> <LocalLeader>Nwarrow ⇖
-noremap! <buffer> <LocalLeader>oast ⊛
-noremap! <buffer> <LocalLeader>odot ⊙
-noremap! <buffer> <LocalLeader>o. ⊙
-noremap! <buffer> <LocalLeader>of ∘
-noremap! <buffer> <LocalLeader>o ∘
-noremap! <buffer> <LocalLeader>ominus ⊖
-noremap! <buffer> <LocalLeader>o- ⊖
-noremap! <buffer> <LocalLeader>oplus ⊕
-noremap! <buffer> <LocalLeader>o+ ⊕
-noremap! <buffer> <LocalLeader>oslash ⊘
-noremap! <buffer> <LocalLeader>o/ ⊘
-noremap! <buffer> <LocalLeader>otimes ⊗
-noremap! <buffer> <LocalLeader>o* ⊗
-noremap! <buffer> <LocalLeader>par ∂
-noremap! <buffer> <LocalLeader>pge ≽
-noremap! <buffer> <LocalLeader>pgt ≻
-noremap! <buffer> <LocalLeader>ple ≼
-noremap! <buffer> <LocalLeader>plt ≺
-noremap! <buffer> <LocalLeader>p≥ ≽
-noremap! <buffer> <LocalLeader>p> ≻
-noremap! <buffer> <LocalLeader>p≤ ≼
-noremap! <buffer> <LocalLeader>p< ≺
-noremap! <buffer> <LocalLeader>pm ±
-noremap! <buffer> <LocalLeader>prec ≼
-noremap! <buffer> <LocalLeader>prod ∏
-noremap! <buffer> <LocalLeader>proves ⊢
-noremap! <buffer> <LocalLeader>\|- ⊢
-noremap! <buffer> <LocalLeader>provedby ⊣
-noremap! <buffer> <LocalLeader>Q ℚ
-noremap! <buffer> <LocalLeader>qed ∎
-noremap! <buffer> <LocalLeader>R ℝ
-noremap! <buffer> <LocalLeader>rangle ⟩
-noremap! <buffer> <LocalLeader>rbrac ⟧
-noremap! <buffer> <LocalLeader>]] ⟧
-noremap! <buffer> <LocalLeader>rdown ⇂
-noremap! <buffer> <LocalLeader>righttri ▸
-noremap! <buffer> <LocalLeader>rrangle ⟫
-noremap! <buffer> <LocalLeader>rup ↾
-noremap! <buffer> <LocalLeader>searrow ↘
-noremap! <buffer> <LocalLeader>Searrow ⇘
-noremap! <buffer> <LocalLeader>setminus ∖
-noremap! <buffer> <LocalLeader>sharp ♯
-noremap! <buffer> <LocalLeader># ♯
-noremap! <buffer> <LocalLeader>sim ∼
-noremap! <buffer> <LocalLeader>simeq ≃
-noremap! <buffer> <LocalLeader>some ∃
-noremap! <buffer> <LocalLeader>sqge ⊒
-noremap! <buffer> <LocalLeader>sqgt ⊐
-noremap! <buffer> <LocalLeader>sqle ⊑
-noremap! <buffer> <LocalLeader>sqlt ⊏
-noremap! <buffer> <LocalLeader>s≥ ⊒
-noremap! <buffer> <LocalLeader>s> ⊐
-noremap! <buffer> <LocalLeader>s≤ ⊑
-noremap! <buffer> <LocalLeader>s< ⊏
-noremap! <buffer> <LocalLeader>sqr ²
-noremap! <buffer> <LocalLeader>sqrt √
-noremap! <buffer> <LocalLeader>star ✭
-noremap! <buffer> <LocalLeader>subset ⊂
-noremap! <buffer> <LocalLeader>sub ⊂
-noremap! <buffer> <LocalLeader>subseteq ⊆
-noremap! <buffer> <LocalLeader>subeq ⊆
-noremap! <buffer> <LocalLeader>subsetneq ⊊
-noremap! <buffer> <LocalLeader>subneq ⊊
-noremap! <buffer> <LocalLeader>sum ∑
-noremap! <buffer> <LocalLeader>supset ⊃
-noremap! <buffer> <LocalLeader>sup ⊃
-noremap! <buffer> <LocalLeader>supseteq ⊇
-noremap! <buffer> <LocalLeader>supeq ⊇
-noremap! <buffer> <LocalLeader>supsetneq ⊋
-noremap! <buffer> <LocalLeader>supneq ⊋
-noremap! <buffer> <LocalLeader>swarrow ↙
-noremap! <buffer> <LocalLeader>Swarrow ⇙
-noremap! <buffer> <LocalLeader>thus ∴
-noremap! <buffer> <LocalLeader>times ×
-noremap! <buffer> <LocalLeader>* ×
-noremap! <buffer> <LocalLeader>to →
-noremap! <buffer> <LocalLeader>- →
+" Public to allow referencing in custom overrides.
+if !exists('g:agda_default_glyphs')
+  let g:agda_default_glyphs = {}
+
+  " Combining marks
+  call extend(g:agda_default_glyphs, {
+    \   'over`': ' ̀',
+    \   "over'": ' ́',
+    \   'over^': ' ̂',
+    \   'overv': ' ̌',
+    \   'over~': ' ̃',
+    \   'over-': ' ̄',
+    \   'over_': ' ̅',
+    \   'over–': ' ̅',
+    \   'over—': ' ̅',
+    \   'overcup': ' ̆',
+    \   'overcap': ' ̑',
+    \   'over.': ' ̇',
+    \   'over..': ' ̈',
+    \   'over"': ' ̈',
+    \   'over...': ' ⃛',
+    \   'overright.': ' ͘',
+    \   'overo': ' ̊',
+    \   'over``': ' ̏',
+    \   "over''": ' ̋',
+    \   'overvec': ' ⃑',
+    \   'vec': ' ⃑',
+    \   'overlvec': ' ⃐',
+    \   'lvec': ' ⃐',
+    \   'overarc': ' ⃕',
+    \   'overlarc': ' ⃔',
+    \   'overto': ' ⃗',
+    \   'overfrom': ' ⃖',
+    \   'overfromto': ' ⃡',
+    \   'over*': ' ⃰',
+    \   'under`': ' ̖',
+    \   "under'": ' ̗',
+    \   'under,': ' ̗',
+    \   'under.': ' ̣',
+    \   'under..': ' ̤',
+    \   'under"': ' ̤',
+    \   'undero': ' ̥',
+    \   'under-': ' ̱',
+    \   'under_': ' ̲',
+    \   'under–': ' ̲',
+    \   'under—': ' ̲',
+    \   'through~': ' ̴',
+    \   'through-': ' ̵',
+    \   'through_': ' ̶',
+    \   'through–': ' ̶',
+    \   'through—': ' ̶',
+    \   'through/': ' ̷',
+    \   'not': ' ̷',
+    \   'through?': ' ̸',
+    \   'Not': ' ̸',
+    \   'through\|': ' ⃒',
+    \   'throughshortmid': ' ⃓',
+    \   'througho': ' ⃘',
+    \})
+
+  " Math
+  call extend(g:agda_default_glyphs, {
+    \   '{{': '⦃',
+    \   '}}': '⦄',
+    \   ':': '∶',
+    \   '::': '∷',
+    \   ';': '﹔',
+    \   '..': '‥',
+    \   '=?': '≟',
+    \   'all': '∀',
+    \   'always': '□',
+    \   'approx': '≈',
+    \   'bot': '⊥',
+    \   'box': '□',
+    \   'boxdot': '⊡',
+    \   'box.': '⊡',
+    \   'boxminus': '⊟',
+    \   'box-': '⊟',
+    \   'boxplus': '⊞',
+    \   'box+': '⊞',
+    \   'boxtimes': '⊠',
+    \   'box*': '⊠',
+    \   'bul': '•',
+    \   'C': 'ℂ',
+    \   'cdot': '∙',
+    \   '.': '∙',
+    \   'cdots': '⋯',
+    \   'check': '✓',
+    \   'yes': '✓',
+    \   'Check': '✔',
+    \   'Yes': '✔',
+    \   'circ': '∘',
+    \   'clock': '↻',
+    \   'cclock': '↺',
+    \   'comp': '∘',
+    \   'contra': '↯',
+    \   'deg': '°',
+    \   'den': '⟦⟧<left>',
+    \   'diamond': '◇',
+    \   'dots': '…',
+    \   'down': '↓',
+    \   'downtri': '▼',
+    \   'Down': '⇓',
+    \   'dunion': '⊎',
+    \   'du': '⊎',
+    \   'ell': 'ℓ',
+    \   'empty': '∅',
+    \   'equiv': '≡',
+    \   'eq': '≡',
+    \   'eventually': '◇',
+    \   'exists': '∃',
+    \   'flat': '♭',
+    \   'fold': '⦇⦈<left>',
+    \   '(\|': '⦇',
+    \   '\|)': '⦈',
+    \   'forall': '∀',
+    \   'from': '←',
+    \   '<-': '←',
+    \   'From': '⇐',
+    \   'fromto': '↔',
+    \   'Fromto': '⇔',
+    \   'ge': '≥',
+    \   'glub': '⊓',
+    \   'iff': '⇔',
+    \   'implies': '⇒',
+    \   'impliedby': '⇐',
+    \   'in': '∈',
+    \   'infty': '∞',
+    \   'inf': '∞',
+    \   'int': '∫',
+    \   'intersect': '∩',
+    \   'iso': '≅',
+    \   'join': '⋈',
+    \   'land': '∧',
+    \   'langle': '⟨',
+    \   'lbrac': '⟦',
+    \   '[[': '⟦',
+    \   'ldots': '…',
+    \   'ldown': '⇃',
+    \   'leadsto': '⇝',
+    \   '~>': '⇝',
+    \   'le': '≤',
+    \   'lift': '⌊⌋<left>',
+    \   'floor': '⌊⌋<left>',
+    \   'llangle': '⟪',
+    \   'longto': '⟶ ',
+    \   '--': '⟶ ',
+    \   '–': '⟶ ',
+    \   'lor': '∨',
+    \   'lower': '⌈⌉<left>',
+    \   'ceil': '⌈⌉<left>',
+    \   'lub': '⊔',
+    \   'lup': '↿',
+    \   'mapsto': '↦',
+    \   'map': '↦',
+    \   'mid': '∣',
+    \   'models': '⊨',
+    \   '\|=': '⊨',
+    \   'N': 'ℕ',
+    \   'ne': '≠',
+    \   'nearrow': '↗',
+    \   'Nearrow': '⇗',
+    \   'neg': '¬',
+    \   '/=': '≠',
+    \   'nequiv': '≢',
+    \   'neq': '≢',
+    \   'nexist': '∄',
+    \   'none': '∄',
+    \   'ni': '∋',
+    \   'nin': '∉',
+    \   'niso': '≇',
+    \   'notin': '∉',
+    \   'nwarrow': '↖',
+    \   'Nwarrow': '⇖',
+    \   'oast': '⊛',
+    \   'odot': '⊙',
+    \   'o.': '⊙',
+    \   'of': '∘',
+    \   'o': '∘',
+    \   'ominus': '⊖',
+    \   'o-': '⊖',
+    \   'oplus': '⊕',
+    \   'o+': '⊕',
+    \   'oslash': '⊘',
+    \   'o/': '⊘',
+    \   'otimes': '⊗',
+    \   'o*': '⊗',
+    \   'par': '∂',
+    \   'pge': '≽',
+    \   'pgt': '≻',
+    \   'ple': '≼',
+    \   'plt': '≺',
+    \   'p≥': '≽',
+    \   'p>': '≻',
+    \   'p≤': '≼',
+    \   'p<': '≺',
+    \   'pm': '±',
+    \   'prec': '≼',
+    \   'prod': '∏',
+    \   'proves': '⊢',
+    \   '\|-': '⊢',
+    \   'provedby': '⊣',
+    \   'Q': 'ℚ',
+    \   'qed': '∎',
+    \   'R': 'ℝ',
+    \   'rangle': '⟩',
+    \   'rbrac': '⟧',
+    \   ']]': '⟧',
+    \   'rdown': '⇂',
+    \   'righttri': '▸',
+    \   'rrangle': '⟫',
+    \   'rup': '↾',
+    \   'searrow': '↘',
+    \   'Searrow': '⇘',
+    \   'setminus': '∖',
+    \   'sharp': '♯',
+    \   '#': '♯',
+    \   'sim': '∼',
+    \   'simeq': '≃',
+    \   'some': '∃',
+    \   'sqge': '⊒',
+    \   'sqgt': '⊐',
+    \   'sqle': '⊑',
+    \   'sqlt': '⊏',
+    \   's≥': '⊒',
+    \   's>': '⊐',
+    \   's≤': '⊑',
+    \   's<': '⊏',
+    \   'sqr': '²',
+    \   'sqrt': '√',
+    \   'star': '✭',
+    \   'subset': '⊂',
+    \   'sub': '⊂',
+    \   'subseteq': '⊆',
+    \   'subeq': '⊆',
+    \   'subsetneq': '⊊',
+    \   'subneq': '⊊',
+    \   'sum': '∑',
+    \   'supset': '⊃',
+    \   'sup': '⊃',
+    \   'supseteq': '⊇',
+    \   'supeq': '⊇',
+    \   'supsetneq': '⊋',
+    \   'supneq': '⊋',
+    \   'swarrow': '↙',
+    \   'Swarrow': '⇙',
+    \   'thus': '∴',
+    \   'times': '×',
+    \   '*': '×',
+    \   'to': '→',
+    \   '-': '→',
+    \   'To': '⇒',
+    \   '=': '⇒',
+    \   'top': '⊤',
+    \   'tuple': '⟨⟩<left>',
+    \   'up': '↑',
+    \   'updown': '↕',
+    \   'ud': '↕',
+    \   'unfold': '⦉⦊<left>',
+    \   '<\|': '⦉',
+    \   '\|>': '⦊',
+    \   'up;down': '⇅',
+    \   'u;d': '⇅',
+    \   'uptri': '▲',
+    \   'Up': '⇑',
+    \   'union': '∪',
+    \   'vdots': '⋮',
+    \   'voltage': '⚡',
+    \   'xmark': '✗',
+    \   'no': '✗',
+    \   'Xmark': '✘',
+    \   'No': '✘',
+    \   'Z': 'ℤ',
+    \})
+
+  " Not math
+  call extend(g:agda_default_glyphs, {
+    \   'sec': '§',
+    \})
+
+  " Superscripts
+  call extend(g:agda_default_glyphs, {
+    \   '^0': '⁰',
+    \   '^1': '¹',
+    \   '^2': '²',
+    \   '^3': '³',
+    \   '^4': '⁴',
+    \   '^5': '⁵',
+    \   '^6': '⁶',
+    \   '^7': '⁷',
+    \   '^8': '⁸',
+    \   '^9': '⁹',
+    \   '^n': 'ⁿ',
+    \   '^i': 'ⁱ',
+    \   '^+': '⁺',
+    \   '^-': '⁻',
+    \   "'": '′',
+    \   "''": '″',
+    \   "'''": '‴',
+    \   "''''": '⁗',
+    \   '"': '″',
+    \   '""': '⁗',
+    \   '`': '‵',
+    \   '``': '‶',
+    \   '```': '‷',
+    \})
+
+  " Subscripts
+  call extend(g:agda_default_glyphs, {
+    \   '0': '₀',
+    \   '1': '₁',
+    \   '2': '₂',
+    \   '3': '₃',
+    \   '4': '₄',
+    \   '5': '₅',
+    \   '6': '₆',
+    \   '7': '₇',
+    \   '8': '₈',
+    \   '9': '₉',
+    \   '_i': 'ᵢ',
+    \   '_j': 'ⱼ',
+    \   '_+': '₊',
+    \   '_-': '₋',
+    \   'p0': 'π₀',
+    \   'p1': 'π₁',
+    \   'p2': 'π₂',
+    \   'p3': 'π₃',
+    \   'p4': 'π₄',
+    \   'p5': 'π₅',
+    \   'p6': 'π₆',
+    \   'p7': 'π₇',
+    \   'p8': 'π₈',
+    \   'p9': 'π₉',
+    \   'i0': 'ι₀',
+    \   'i1': 'ι₁',
+    \   'i2': 'ι₂',
+    \   'i3': 'ι₃',
+    \   'i4': 'ι₄',
+    \   'i5': 'ι₅',
+    \   'i6': 'ι₆',
+    \   'i7': 'ι₇',
+    \   'i8': 'ι₈',
+    \   'i9': 'ι₉',
+    \})
+
+  " Greek (lower)
+  call extend(g:agda_default_glyphs, {
+    \   'alpha': 'α',
+    \   'a': 'α',
+    \   'beta': 'β',
+    \   'b': 'β',
+    \   'gamma': 'γ',
+    \   'g': 'γ',
+    \   'delta': 'δ',
+    \   'd': 'δ',
+    \   'epsilon': 'ε',
+    \   'e': 'ε',
+    \   'zeta': 'ζ',
+    \   'z': 'ζ',
+    \   'eta': 'η',
+    \   'h': 'η',
+    \   'theta': 'θ',
+    \   'iota': 'ι',
+    \   'i': 'ι',
+    \   'kappa': 'κ',
+    \   'k': 'κ',
+    \   'lambda': 'λ',
+    \   'l': 'λ',
+    \   'mu': 'μ',
+    \   'm': 'μ',
+    \   'nu': 'ν',
+    \   'n': 'ν',
+    \   'xi': 'ξ',
+    \   'omicron': 'ο',
+    \   'pi': 'π',
+    \   'p': 'π',
+    \   'rho': 'ρ',
+    \   'r': 'ρ',
+    \   'sigma': 'σ',
+    \   's': 'σ',
+    \   'varsigma': 'ς',
+    \   'vars': 'ς',
+    \   'tau': 'τ',
+    \   't': 'τ',
+    \   'u': 'υ',
+    \   'phi': 'φ',
+    \   'f': 'φ',
+    \   'chi': 'χ',
+    \   'x': 'χ',
+    \   'psi': 'ψ',
+    \   'c': 'ψ',
+    \   'omega': 'ω',
+    \   'v': 'ω',
+    \})
+
+  " Greek (upper)
+  call extend(g:agda_default_glyphs, {
+    \   'Alpha': 'Α',
+    \   'Beta': 'Β',
+    \   'Gamma': 'Γ',
+    \   'G': 'Γ',
+    \   'Delta': 'Δ',
+    \   'D': 'Δ',
+    \   'Epsilon': 'Ε',
+    \   'Zeta': 'Ζ',
+    \   'Eta': 'Η',
+    \   'Theta': 'Θ',
+    \   'Iota': 'Ι',
+    \   'Kappa': 'Κ',
+    \   'Lambda': 'Λ',
+    \   'L': 'Λ',
+    \   'Mu': 'Μ',
+    \   'Nu': 'Ν',
+    \   'Xi': 'Ξ',
+    \   'Omicron': 'Ο',
+    \   'Pi': 'Π',
+    \   'P': 'Π',
+    \   'Rho': 'Ρ',
+    \   'Sigma': 'Σ',
+    \   'S': 'Σ',
+    \   'Tau': 'Τ',
+    \   'Upsilon': 'Υ',
+    \   'Phi': 'Φ',
+    \   'F': 'Φ',
+    \   'Chi': 'Χ',
+    \   'Psi': 'Ψ',
+    \   'Omega': 'Ω',
+    \   'V': 'Ω',
+    \})
+
+  lockvar g:agda_default_glyphs
+endif
+
+if !exists('g:agda_glyphs')
+  let g:agda_glyphs = deepcopy(g:agda_default_glyphs)
+endif
+
+for [sequence, symbol] in items(g:agda_glyphs)
+  execute printf('noremap! <buffer> <LocalLeader>%s %s', sequence, symbol)
+endfor
+
+" The only mapping that was not prefixed by LocalLeader:
 noremap! <buffer> <C-_> →
-noremap! <buffer> <LocalLeader>To ⇒
-noremap! <buffer> <LocalLeader>= ⇒
-noremap! <buffer> <LocalLeader>top ⊤
-noremap! <buffer> <LocalLeader>tuple ⟨⟩<left>
-noremap! <buffer> <LocalLeader>up ↑
-noremap! <buffer> <LocalLeader>updown ↕
-noremap! <buffer> <LocalLeader>ud ↕
-noremap! <buffer> <LocalLeader>unfold ⦉⦊<left>
-noremap! <buffer> <LocalLeader><\| ⦉
-noremap! <buffer> <LocalLeader>\|> ⦊
-noremap! <buffer> <LocalLeader>up;down ⇅
-noremap! <buffer> <LocalLeader>u;d ⇅
-noremap! <buffer> <LocalLeader>uptri ▲
-noremap! <buffer> <LocalLeader>Up ⇑
-noremap! <buffer> <LocalLeader>union ∪
-noremap! <buffer> <LocalLeader>vdots ⋮
-noremap! <buffer> <LocalLeader>voltage ⚡
-noremap! <buffer> <LocalLeader>xmark ✗
-noremap! <buffer> <LocalLeader>no ✗
-noremap! <buffer> <LocalLeader>Xmark ✘
-noremap! <buffer> <LocalLeader>No ✘
-noremap! <buffer> <LocalLeader>Z ℤ
 
-" Not math
-noremap! <buffer> <LocalLeader>sec §
-
-" Superscripts
-noremap! <buffer> <LocalLeader>^0 ⁰
-noremap! <buffer> <LocalLeader>^1 ¹
-noremap! <buffer> <LocalLeader>^2 ²
-noremap! <buffer> <LocalLeader>^3 ³
-noremap! <buffer> <LocalLeader>^4 ⁴
-noremap! <buffer> <LocalLeader>^5 ⁵
-noremap! <buffer> <LocalLeader>^6 ⁶
-noremap! <buffer> <LocalLeader>^7 ⁷
-noremap! <buffer> <LocalLeader>^8 ⁸
-noremap! <buffer> <LocalLeader>^9 ⁹
-noremap! <buffer> <LocalLeader>^n ⁿ
-noremap! <buffer> <LocalLeader>^i ⁱ
-noremap! <buffer> <LocalLeader>^+ ⁺
-noremap! <buffer> <LocalLeader>^- ⁻
-noremap! <buffer> <LocalLeader>' ′
-noremap! <buffer> <LocalLeader>'' ″
-noremap! <buffer> <LocalLeader>''' ‴
-noremap! <buffer> <LocalLeader>'''' ⁗
-noremap! <buffer> <LocalLeader>" ″
-noremap! <buffer> <LocalLeader>"" ⁗
-noremap! <buffer> <LocalLeader>` ‵
-noremap! <buffer> <LocalLeader>`` ‶
-noremap! <buffer> <LocalLeader>``` ‷
-
-" Subscripts
-noremap! <buffer> <LocalLeader>0 ₀
-noremap! <buffer> <LocalLeader>1 ₁
-noremap! <buffer> <LocalLeader>2 ₂
-noremap! <buffer> <LocalLeader>3 ₃
-noremap! <buffer> <LocalLeader>4 ₄
-noremap! <buffer> <LocalLeader>5 ₅
-noremap! <buffer> <LocalLeader>6 ₆
-noremap! <buffer> <LocalLeader>7 ₇
-noremap! <buffer> <LocalLeader>8 ₈
-noremap! <buffer> <LocalLeader>9 ₉
-noremap! <buffer> <LocalLeader>_i ᵢ
-noremap! <buffer> <LocalLeader>_j ⱼ
-noremap! <buffer> <LocalLeader>_+ ₊
-noremap! <buffer> <LocalLeader>_- ₋
-noremap! <buffer> <LocalLeader>p0 π₀
-noremap! <buffer> <LocalLeader>p1 π₁
-noremap! <buffer> <LocalLeader>p2 π₂
-noremap! <buffer> <LocalLeader>p3 π₃
-noremap! <buffer> <LocalLeader>p4 π₄
-noremap! <buffer> <LocalLeader>p5 π₅
-noremap! <buffer> <LocalLeader>p6 π₆
-noremap! <buffer> <LocalLeader>p7 π₇
-noremap! <buffer> <LocalLeader>p8 π₈
-noremap! <buffer> <LocalLeader>p9 π₉
-noremap! <buffer> <LocalLeader>i0 ι₀
-noremap! <buffer> <LocalLeader>i1 ι₁
-noremap! <buffer> <LocalLeader>i2 ι₂
-noremap! <buffer> <LocalLeader>i3 ι₃
-noremap! <buffer> <LocalLeader>i4 ι₄
-noremap! <buffer> <LocalLeader>i5 ι₅
-noremap! <buffer> <LocalLeader>i6 ι₆
-noremap! <buffer> <LocalLeader>i7 ι₇
-noremap! <buffer> <LocalLeader>i8 ι₈
-noremap! <buffer> <LocalLeader>i9 ι₉
-
-" Greek (lower)
-noremap! <buffer> <LocalLeader>alpha α
-noremap! <buffer> <LocalLeader>a α
-noremap! <buffer> <LocalLeader>beta β
-noremap! <buffer> <LocalLeader>b β
-noremap! <buffer> <LocalLeader>gamma γ
-noremap! <buffer> <LocalLeader>g γ
-noremap! <buffer> <LocalLeader>delta δ
-noremap! <buffer> <LocalLeader>d δ
-noremap! <buffer> <LocalLeader>epsilon ε
-noremap! <buffer> <LocalLeader>e ε
-noremap! <buffer> <LocalLeader>zeta ζ
-noremap! <buffer> <LocalLeader>z ζ
-noremap! <buffer> <LocalLeader>eta η
-noremap! <buffer> <LocalLeader>h η
-noremap! <buffer> <LocalLeader>theta θ
-noremap! <buffer> <LocalLeader>iota ι
-noremap! <buffer> <LocalLeader>i ι
-noremap! <buffer> <LocalLeader>kappa κ
-noremap! <buffer> <LocalLeader>k κ
-noremap! <buffer> <LocalLeader>lambda λ
-noremap! <buffer> <LocalLeader>l λ
-noremap! <buffer> <LocalLeader>mu μ
-noremap! <buffer> <LocalLeader>m μ
-noremap! <buffer> <LocalLeader>nu ν
-noremap! <buffer> <LocalLeader>n ν
-noremap! <buffer> <LocalLeader>xi ξ
-noremap! <buffer> <LocalLeader>omicron ο
-noremap! <buffer> <LocalLeader>pi π
-noremap! <buffer> <LocalLeader>p π
-noremap! <buffer> <LocalLeader>rho ρ
-noremap! <buffer> <LocalLeader>r ρ
-noremap! <buffer> <LocalLeader>sigma σ
-noremap! <buffer> <LocalLeader>s σ
-noremap! <buffer> <LocalLeader>varsigma ς
-noremap! <buffer> <LocalLeader>vars ς
-noremap! <buffer> <LocalLeader>tau τ
-noremap! <buffer> <LocalLeader>t τ
-noremap! <buffer> <LocalLeader>u υ
-noremap! <buffer> <LocalLeader>phi φ
-noremap! <buffer> <LocalLeader>f φ
-noremap! <buffer> <LocalLeader>chi χ
-noremap! <buffer> <LocalLeader>x χ
-noremap! <buffer> <LocalLeader>psi ψ
-noremap! <buffer> <LocalLeader>c ψ
-noremap! <buffer> <LocalLeader>omega ω
-noremap! <buffer> <LocalLeader>v ω
-
-" Greek (upper)
-noremap! <buffer> <LocalLeader>Alpha Α
-noremap! <buffer> <LocalLeader>Beta Β
-noremap! <buffer> <LocalLeader>Gamma Γ
-noremap! <buffer> <LocalLeader>G Γ
-noremap! <buffer> <LocalLeader>Delta Δ
-noremap! <buffer> <LocalLeader>D Δ
-noremap! <buffer> <LocalLeader>Epsilon Ε
-noremap! <buffer> <LocalLeader>Zeta Ζ
-noremap! <buffer> <LocalLeader>Eta Η
-noremap! <buffer> <LocalLeader>Theta Θ
-noremap! <buffer> <LocalLeader>Iota Ι
-noremap! <buffer> <LocalLeader>Kappa Κ
-noremap! <buffer> <LocalLeader>Lambda Λ
-noremap! <buffer> <LocalLeader>L Λ
-noremap! <buffer> <LocalLeader>Mu Μ
-noremap! <buffer> <LocalLeader>Nu Ν
-noremap! <buffer> <LocalLeader>Xi Ξ
-noremap! <buffer> <LocalLeader>Omicron Ο
-noremap! <buffer> <LocalLeader>Pi Π
-noremap! <buffer> <LocalLeader>P Π
-noremap! <buffer> <LocalLeader>Rho Ρ
-noremap! <buffer> <LocalLeader>Sigma Σ
-noremap! <buffer> <LocalLeader>S Σ
-noremap! <buffer> <LocalLeader>Tau Τ
-noremap! <buffer> <LocalLeader>Upsilon Υ
-noremap! <buffer> <LocalLeader>Phi Φ
-noremap! <buffer> <LocalLeader>F Φ
-noremap! <buffer> <LocalLeader>Chi Χ
-noremap! <buffer> <LocalLeader>Psi Ψ
-noremap! <buffer> <LocalLeader>Omega Ω
-noremap! <buffer> <LocalLeader>V Ω
+let &cpo = s:cpo_save
