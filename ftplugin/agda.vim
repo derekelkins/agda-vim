@@ -26,11 +26,11 @@ endfunction
 
 autocmd QuickfixCmdPost make call ReloadSyntax()|call AgdaVersion(1)|call Load(1)
 
-set autowrite
+setlocal autowrite
 
 let g:agdavim_agda_includepathlist = deepcopy(['.'] + get(g:, 'agda_extraincpaths', []))
 call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
-let &makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
+let &l:makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
 
 if get(g:, 'agdavim_includeutf8_mappings', 1)
     runtime agda-utf8.vim
@@ -38,7 +38,7 @@ endif
 
 let g:agdavim_enable_goto_definition = get(g:, 'agdavim_enable_goto_definition', 1)
 
-set errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
+setlocal errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
 " Python 3 is NOT supported.  This code and other changes are left here to
 " ease adding future Python 3 support.  Right now the main issue is that
