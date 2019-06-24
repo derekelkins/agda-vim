@@ -19,23 +19,15 @@ autocmd QuickfixCmdPost make call ReloadSyntax()|call AgdaVersion(1)|call Load(1
 
 set autowrite
 
-if exists("g:agda_extraincpaths")
-    let g:agdavim_agda_includepathlist_unquoted = ['.'] + g:agda_extraincpaths
-else
-    let g:agdavim_agda_includepathlist_unquoted = ['.']
-endif
-
-let g:agdavim_agda_includepathlist = deepcopy(g:agdavim_agda_includepathlist_unquoted)
+let g:agdavim_agda_includepathlist = deepcopy(['.'] + get(g:, 'agda_extraincpaths', []))
 call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
 let &makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
 
-if !exists("g:agdavim_includeutf8_mappings") || g:agdavim_includeutf8_mappings
+if get(g:, 'agdavim_includeutf8_mappings', 1)
     runtime agda-utf8.vim
 endif
 
-if !exists("g:agdavim_enable_goto_definition")
-    let g:agdavim_enable_goto_definition = 1
-endif
+let g:agdavim_enable_goto_definition = get(g:, 'agdavim_enable_goto_definition', 1)
 
 set errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
