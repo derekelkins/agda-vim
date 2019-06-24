@@ -1,3 +1,12 @@
+" Only do this when not done yet for this buffer
+if exists('b:did_ftplugin')
+  finish
+endif
+let b:did_ftplugin = 1
+
+let s:cpo_save = &cpo
+set cpo&vim
+
 " The ReloadSyntax function is reproduced from
 " http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.VIMEditing
 " the remainder is covered by the license described in LICENSE.
@@ -627,3 +636,5 @@ inoremap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><
 Reload
 
 endif
+
+let &cpo = s:cpo_save
