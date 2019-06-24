@@ -591,24 +591,24 @@ else:
 EOF
 endfunction
 
-command! -nargs=0 Load call Load(0)
-command! -nargs=0 AgdaVersion call AgdaVersion(0)
-command! -nargs=0 Reload silent! make!|redraw!
-command! -nargs=0 RestartAgda exec s:python_cmd 'RestartAgda()'
-command! -nargs=0 ShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
-command! -nargs=0 HideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
-command! -nargs=0 ToggleImplicitArguments exec s:python_cmd "sendCommand('ToggleImplicitArgs')"
-command! -nargs=0 Constraints exec s:python_cmd "sendCommand('Cmd_constraints')"
-command! -nargs=0 Metas exec s:python_cmd "sendCommand('Cmd_metas')"
-command! -nargs=0 SolveAll exec s:python_cmd "sendCommand('Cmd_solveAll')"
-command! -nargs=1 ShowModule call ShowModule(<args>)
-command! -nargs=1 WhyInScope call WhyInScope(<args>)
-command! -nargs=1 SetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
-command! -nargs=0 SetRewriteModeAsIs exec s:python_cmd "setRewriteMode('AsIs')"
-command! -nargs=0 SetRewriteModeNormalised exec s:python_cmd "setRewriteMode('Normalised')"
-command! -nargs=0 SetRewriteModeSimplified exec s:python_cmd "setRewriteMode('Simplified')"
-command! -nargs=0 SetRewriteModeHeadNormal exec s:python_cmd "setRewriteMode('HeadNormal')"
-command! -nargs=0 SetRewriteModeInstantiated exec s:python_cmd "setRewriteMode('Instantiated')"
+command! -buffer -nargs=0 Load call Load(0)
+command! -buffer -nargs=0 AgdaVersion call AgdaVersion(0)
+command! -buffer -nargs=0 Reload silent! make!|redraw!
+command! -buffer -nargs=0 RestartAgda exec s:python_cmd 'RestartAgda()'
+command! -buffer -nargs=0 ShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
+command! -buffer -nargs=0 HideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
+command! -buffer -nargs=0 ToggleImplicitArguments exec s:python_cmd "sendCommand('ToggleImplicitArgs')"
+command! -buffer -nargs=0 Constraints exec s:python_cmd "sendCommand('Cmd_constraints')"
+command! -buffer -nargs=0 Metas exec s:python_cmd "sendCommand('Cmd_metas')"
+command! -buffer -nargs=0 SolveAll exec s:python_cmd "sendCommand('Cmd_solveAll')"
+command! -buffer -nargs=1 ShowModule call ShowModule(<args>)
+command! -buffer -nargs=1 WhyInScope call WhyInScope(<args>)
+command! -buffer -nargs=1 SetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
+command! -buffer -nargs=0 SetRewriteModeAsIs exec s:python_cmd "setRewriteMode('AsIs')"
+command! -buffer -nargs=0 SetRewriteModeNormalised exec s:python_cmd "setRewriteMode('Normalised')"
+command! -buffer -nargs=0 SetRewriteModeSimplified exec s:python_cmd "setRewriteMode('Simplified')"
+command! -buffer -nargs=0 SetRewriteModeHeadNormal exec s:python_cmd "setRewriteMode('HeadNormal')"
+command! -buffer -nargs=0 SetRewriteModeInstantiated exec s:python_cmd "setRewriteMode('Instantiated')"
 
 nnoremap <buffer> <LocalLeader>l :Reload<CR>
 nnoremap <buffer> <LocalLeader>t :call Infer()<CR>
