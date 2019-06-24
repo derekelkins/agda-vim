@@ -8,10 +8,10 @@ let b:undo_ftplugin = ''
 let s:cpo_save = &cpo
 set cpo&vim
 
-" The ReloadSyntax function is reproduced from
+" The AgdaReloadSyntax function is reproduced from
 " http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.VIMEditing
 " the remainder is covered by the license described in LICENSE.
-function! ReloadSyntax()
+function! AgdaReloadSyntax()
     syntax clear
     let f = expand('%:h') . "/." . expand('%:t') . ".vim"
     if filereadable(f)
@@ -19,13 +19,13 @@ function! ReloadSyntax()
     endif
     runtime syntax/agda.vim
 endfunction
-call ReloadSyntax()
+call AgdaReloadSyntax()
 
-function! Load(quiet)
+function! AgdaLoad(quiet)
     " Do nothing.  Overidden below with a Python function if python is supported.
 endfunction
 
-autocmd QuickfixCmdPost make call ReloadSyntax()|call AgdaVersion(1)|call Load(1)
+autocmd QuickfixCmdPost make call AgdaReloadSyntax()|call AgdaVersion(1)|call AgdaLoad(1)
 
 setlocal autowrite
 let b:undo_ftplugin .= ' | setlocal autowrite<'
@@ -266,7 +266,7 @@ def promptUser(msg):
     vim.command('call inputrestore()')
     return result
 
-def RestartAgda():
+def AgdaRestart():
     global agda
     agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
 
@@ -513,7 +513,7 @@ sendCommand('Cmd_show_version', quiet = int(vim.eval('a:quiet')) == 1)
 EOF
 endfunction
 
-function! Load(quiet)
+function! AgdaLoad(quiet)
 exec s:python_until_eof
 f = vim.current.buffer.name
 sendCommandLoad(f, int(vim.eval('a:quiet')) == 1)
@@ -522,20 +522,20 @@ if int(vim.eval('g:agdavim_enable_goto_definition')) == 1:
 EOF
 endfunction
 
-function! LoadHighlightInfo(quiet)
+function! AgdaLoadHighlightInfo(quiet)
 exec s:python_until_eof
 f = vim.current.buffer.name
 sendCommandLoadHighlightInfo(f, int(vim.eval('a:quiet')) == 1)
 EOF
 endfunction
 
-function! GotoAnnotation()
+function! AgdaGotoAnnotation()
 exec s:python_until_eof
 gotoAnnotation()
 EOF
 endfunction
 
-function! Give()
+function! AgdaGive()
 exec s:python_until_eof
 result = getHoleBodyAtCursor()
 
@@ -555,7 +555,7 @@ else:
 EOF
 endfunction
 
-function! MakeCase()
+function! AgdaMakeCase()
 exec s:python_until_eof
 result = getHoleBodyAtCursor()
 if result is None:
@@ -569,7 +569,7 @@ else:
 EOF
 endfunction
 
-function! Refine(unfoldAbstract)
+function! AgdaRefine(unfoldAbstract)
 exec s:python_until_eof
 result = getHoleBodyAtCursor()
 if result is None:
@@ -581,7 +581,7 @@ else:
 EOF
 endfunction
 
-function! Auto()
+function! AgdaAuto()
 exec s:python_until_eof
 result = getHoleBodyAtCursor()
 if result is None:
@@ -596,7 +596,7 @@ else:
 EOF
 endfunction
 
-function! Context()
+function! AgdaContext()
 exec s:python_until_eof
 result = getHoleBodyAtCursor()
 if result is None:
@@ -608,7 +608,7 @@ else:
 EOF
 endfunction
 
-function! Infer()
+function! AgdaInfer()
 exec s:python_until_eof
 result = getHoleBodyAtCursor()
 if result is None:
@@ -621,7 +621,7 @@ EOF
 endfunction
 
 " As of 2.5.2, the options are "DefaultCompute", "IgnoreAbstract", "UseShowInstance"
-function! Normalize(unfoldAbstract)
+function! AgdaNormalize(unfoldAbstract)
 exec s:python_until_eof
 unfoldAbstract = vim.eval("a:unfoldAbstract")
 
@@ -638,7 +638,7 @@ else:
 EOF
 endfunction
 
-function! WhyInScope(term)
+function! AgdaWhyInScope(term)
 exec s:python_until_eof
 
 termName = vim.eval('a:term')
@@ -655,7 +655,7 @@ else:
 EOF
 endfunction
 
-function! ShowModule(module)
+function! AgdaShowModule(module)
 exec s:python_until_eof
 
 moduleName = vim.eval('a:module')
@@ -680,7 +680,7 @@ else:
 EOF
 endfunction
 
-function! HelperFunction()
+function! AgdaHelperFunction()
 exec s:python_until_eof
 result = getHoleBodyAtCursor()
 
@@ -695,44 +695,44 @@ else:
 EOF
 endfunction
 
-command! -buffer -nargs=0 Load call Load(0)
+command! -buffer -nargs=0 AgdaLoad call AgdaLoad(0)
 command! -buffer -nargs=0 AgdaVersion call AgdaVersion(0)
-command! -buffer -nargs=0 Reload silent! make!|redraw!
-command! -buffer -nargs=0 RestartAgda exec s:python_cmd 'RestartAgda()'
-command! -buffer -nargs=0 ShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
-command! -buffer -nargs=0 HideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
-command! -buffer -nargs=0 ToggleImplicitArguments exec s:python_cmd "sendCommand('ToggleImplicitArgs')"
-command! -buffer -nargs=0 Constraints exec s:python_cmd "sendCommand('Cmd_constraints')"
-command! -buffer -nargs=0 Metas exec s:python_cmd "sendCommand('Cmd_metas')"
-command! -buffer -nargs=0 SolveAll exec s:python_cmd "sendCommand('Cmd_solveAll')"
-command! -buffer -nargs=1 ShowModule call ShowModule(<args>)
-command! -buffer -nargs=1 WhyInScope call WhyInScope(<args>)
-command! -buffer -nargs=1 SetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
-command! -buffer -nargs=0 SetRewriteModeAsIs exec s:python_cmd "setRewriteMode('AsIs')"
-command! -buffer -nargs=0 SetRewriteModeNormalised exec s:python_cmd "setRewriteMode('Normalised')"
-command! -buffer -nargs=0 SetRewriteModeSimplified exec s:python_cmd "setRewriteMode('Simplified')"
-command! -buffer -nargs=0 SetRewriteModeHeadNormal exec s:python_cmd "setRewriteMode('HeadNormal')"
-command! -buffer -nargs=0 SetRewriteModeInstantiated exec s:python_cmd "setRewriteMode('Instantiated')"
+command! -buffer -nargs=0 AgdaReload silent! make!|redraw!
+command! -buffer -nargs=0 AgdaRestartAgda exec s:python_cmd 'RestartAgda()'
+command! -buffer -nargs=0 AgdaShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
+command! -buffer -nargs=0 AgdaHideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
+command! -buffer -nargs=0 AgdaToggleImplicitArguments exec s:python_cmd "sendCommand('ToggleImplicitArgs')"
+command! -buffer -nargs=0 AgdaConstraints exec s:python_cmd "sendCommand('Cmd_constraints')"
+command! -buffer -nargs=0 AgdaMetas exec s:python_cmd "sendCommand('Cmd_metas')"
+command! -buffer -nargs=0 AgdaSolveAll exec s:python_cmd "sendCommand('Cmd_solveAll')"
+command! -buffer -nargs=1 AgdaShowModule call AgdaShowModule(<args>)
+command! -buffer -nargs=1 AgdaWhyInScope call AgdaWhyInScope(<args>)
+command! -buffer -nargs=1 AgdaSetRewriteMode exec s:python_cmd "setRewriteMode('<args>')"
+command! -buffer -nargs=0 AgdaSetRewriteModeAsIs exec s:python_cmd "setRewriteMode('AsIs')"
+command! -buffer -nargs=0 AgdaSetRewriteModeNormalised exec s:python_cmd "setRewriteMode('Normalised')"
+command! -buffer -nargs=0 AgdaSetRewriteModeSimplified exec s:python_cmd "setRewriteMode('Simplified')"
+command! -buffer -nargs=0 AgdaSetRewriteModeHeadNormal exec s:python_cmd "setRewriteMode('HeadNormal')"
+command! -buffer -nargs=0 AgdaSetRewriteModeInstantiated exec s:python_cmd "setRewriteMode('Instantiated')"
 
-nnoremap <buffer> <LocalLeader>l :Reload<CR>
-nnoremap <buffer> <LocalLeader>t :call Infer()<CR>
-nnoremap <buffer> <LocalLeader>r :call Refine("False")<CR>
-nnoremap <buffer> <LocalLeader>R :call Refine("True")<CR>
-nnoremap <buffer> <LocalLeader>g :call Give()<CR>
-nnoremap <buffer> <LocalLeader>c :call MakeCase()<CR>
-nnoremap <buffer> <LocalLeader>a :call Auto()<CR>
-nnoremap <buffer> <LocalLeader>e :call Context()<CR>
-nnoremap <buffer> <LocalLeader>n :call Normalize("IgnoreAbstract")<CR>
-nnoremap <buffer> <LocalLeader>N :call Normalize("DefaultCompute")<CR>
-nnoremap <buffer> <LocalLeader>M :call ShowModule('')<CR>
-nnoremap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
-nnoremap <buffer> <LocalLeader>h :call HelperFunction()<CR>
-nnoremap <buffer> <LocalLeader>d :call GotoAnnotation()<CR>
-nnoremap <buffer> <LocalLeader>m :Metas<CR>
+nnoremap <buffer> <LocalLeader>l :AgdaReload<CR>
+nnoremap <buffer> <LocalLeader>t :call AgdaInfer()<CR>
+nnoremap <buffer> <LocalLeader>r :call AgdaRefine("False")<CR>
+nnoremap <buffer> <LocalLeader>R :call AgdaRefine("True")<CR>
+nnoremap <buffer> <LocalLeader>g :call AgdaGive()<CR>
+nnoremap <buffer> <LocalLeader>c :call AgdaMakeCase()<CR>
+nnoremap <buffer> <LocalLeader>a :call AgdaAuto()<CR>
+nnoremap <buffer> <LocalLeader>e :call AgdaContext()<CR>
+nnoremap <buffer> <LocalLeader>n :call AgdaNormalize("IgnoreAbstract")<CR>
+nnoremap <buffer> <LocalLeader>N :call AgdaNormalize("DefaultCompute")<CR>
+nnoremap <buffer> <LocalLeader>M :call AgdaShowModule('')<CR>
+nnoremap <buffer> <LocalLeader>y :call AgdaWhyInScope('')<CR>
+nnoremap <buffer> <LocalLeader>h :call AgdaHelperFunction()<CR>
+nnoremap <buffer> <LocalLeader>d :call AgdaGotoAnnotation()<CR>
+nnoremap <buffer> <LocalLeader>m :AgdaMetas<CR>
 
 " Show/reload metas
-nnoremap <buffer> <C-e> :Metas<CR>
-inoremap <buffer> <C-e> <C-o>:Metas<CR>
+nnoremap <buffer> <C-e> :AgdaMetas<CR>
+inoremap <buffer> <C-e> <C-o>:AgdaMetas<CR>
 
 " Go to next/previous meta
 nnoremap <buffer> <silent> <C-g>  :let _s=@/<CR>/ {!\\| ?<CR>:let @/=_s<CR>2l
@@ -741,7 +741,7 @@ inoremap <buffer> <silent> <C-g>  <C-o>:let _s=@/<CR><C-o>/ {!\\| ?<CR><C-o>:let
 nnoremap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
 inoremap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
 
-Reload
+AgdaReload
 
 endif
 
