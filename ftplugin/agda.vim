@@ -3,6 +3,7 @@ if exists('b:did_ftplugin')
   finish
 endif
 let b:did_ftplugin = 1
+let b:undo_ftplugin = ''
 
 let s:cpo_save = &cpo
 set cpo&vim
@@ -27,10 +28,12 @@ endfunction
 autocmd QuickfixCmdPost make call ReloadSyntax()|call AgdaVersion(1)|call Load(1)
 
 setlocal autowrite
+let b:undo_ftplugin .= ' | setlocal autowrite<'
 
 let g:agdavim_agda_includepathlist = deepcopy(['.'] + get(g:, 'agda_extraincpaths', []))
 call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
 let &l:makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
+let b:undo_ftplugin .= ' | setlocal makeprg<'
 
 if get(g:, 'agdavim_includeutf8_mappings', 1)
     runtime agda-utf8.vim
@@ -39,6 +42,7 @@ endif
 let g:agdavim_enable_goto_definition = get(g:, 'agdavim_enable_goto_definition', 1)
 
 setlocal errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
+let b:undo_ftplugin .= ' | setlocal errorformat<'
 
 " Python 3 is NOT supported.  This code and other changes are left here to
 " ease adding future Python 3 support.  Right now the main issue is that
