@@ -15,7 +15,8 @@ function! Load(quiet)
     " Do nothing.  Overidden below with a Python function if python is supported.
 endfunction
 
-au QuickfixCmdPost make call ReloadSyntax()|call AgdaVersion(1)|call Load(1)
+autocmd QuickfixCmdPost make call ReloadSyntax()|call AgdaVersion(1)|call Load(1)
+
 set autowrite
 
 if exists("g:agda_extraincpaths")
@@ -36,7 +37,7 @@ if !exists("g:agdavim_enable_goto_definition")
     let g:agdavim_enable_goto_definition = 1
 endif
 
-set efm=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
+set errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 
 " Python 3 is NOT supported.  This code and other changes are left here to
 " ease adding future Python 3 support.  Right now the main issue is that
