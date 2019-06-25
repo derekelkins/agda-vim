@@ -4,10 +4,10 @@ import subprocess
 from functools import wraps
 
 
-def vim_func(vim_fname_or_func=None):
+def vim_func(vim_fname_or_func=None, conv=None):
     '''Expose a python function to vim, optionally overriding its name.'''
 
-    def wrap_func(func, vim_fname):
+    def wrap_func(func, vim_fname, conv):
         fname = func.func_name
         vim_fname = vim_fname or fname
 
@@ -19,9 +19,14 @@ def vim_func(vim_fname_or_func=None):
             args = {}
             for k in arg_names:
                 try:
-                    args[k] = vim_arg_dict[k]
+                    val = vim_arg_dict[k]
                 except KeyError:
-                    args[k] = arg_defaults[k]
+                    val = arg_defaults[k]
+
+                if k in conv:
+                    val = conv[k](val)
+
+                args[k] = val
             return func(**args)
 
         setattr(func, 'from_vim', from_vim)
@@ -38,11 +43,21 @@ def vim_func(vim_fname_or_func=None):
         return func
 
     if callable(vim_fname_or_func):
-        return wrap_func(func=vim_fname_or_func, vim_fname=None)
+        return wrap_func(func=vim_fname_or_func, vim_fname=None, conv={})
 
     def wrapper(func):
-        return wrap_func(func=func, vim_fname=vim_fname_or_func)
+        return wrap_func(func=func, vim_fname=vim_fname_or_func, conv=conv or {})
     return wrapper
+
+
+def vim_bool(s):
+    if not s:
+        return False
+    elif s == 'False':
+        return False
+    elif s == 'True':
+        return True
+    return bool(int(s))
 
 
 # start Agda
@@ -320,23 +335,23 @@ def getWordAtCursor():
 
 ## Directly exposed functions: {
 
-@vim_func
+@vim_func(conv={'quiet': vim_bool})
 def AgdaVersion(quiet):
-    sendCommand('Cmd_show_version', quiet = int(quiet) == 1)
+    sendCommand('Cmd_show_version', quiet=quiet)
 
 
-@vim_func
+@vim_func(conv={'quiet': vim_bool})
 def AgdaLoad(quiet):
     f = vim.current.buffer.name
-    sendCommandLoad(f, int(quiet) == 1)
-    if int(vim.vars['agdavim_enable_goto_definition']) == 1:
-        sendCommandLoadHighlightInfo(f, int(quiet) == 1)
+    sendCommandLoad(f, quiet)
+    if vim.vars['agdavim_enable_goto_definition']:
+        sendCommandLoadHighlightInfo(f, quiet)
 
 
-@vim_func
+@vim_func(conv={'quiet': vim_bool})
 def AgdaLoadHighlightInfo(quiet):
     f = vim.current.buffer.name
-    sendCommandLoadHighlightInfo(f, int(quiet) == 1)
+    sendCommandLoadHighlightInfo(f, quiet)
 
 
 @vim_func

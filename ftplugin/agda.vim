@@ -25,7 +25,7 @@ function! AgdaLoad(quiet)
     " Do nothing.  Overidden below with a Python function if python is supported.
 endfunction
 
-autocmd QuickfixCmdPost make call AgdaReloadSyntax()|call AgdaVersion(1)|call AgdaLoad(1)
+autocmd QuickfixCmdPost make call AgdaReloadSyntax()|call AgdaVersion(v:true)|call AgdaLoad(v:true)
 
 setlocal autowrite
 let b:undo_ftplugin .= ' | setlocal autowrite<'
@@ -35,11 +35,11 @@ call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
 let &l:makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
 let b:undo_ftplugin .= ' | setlocal makeprg<'
 
-if get(g:, 'agdavim_includeutf8_mappings', 1)
+if get(g:, 'agdavim_includeutf8_mappings', v:true)
     runtime agda-utf8.vim
 endif
 
-let g:agdavim_enable_goto_definition = get(g:, 'agdavim_enable_goto_definition', 1)
+let g:agdavim_enable_goto_definition = get(g:, 'agdavim_enable_goto_definition', v:true) ? v:true : v:false
 
 setlocal errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 let b:undo_ftplugin .= ' | setlocal errorformat<'
@@ -229,8 +229,8 @@ endfunction
 
 execute s:python_loadfile . resolve(expand('<sfile>:p:h') . '/../agda.py')
 
-command! -buffer -nargs=0 AgdaLoad call AgdaLoad(0)
-command! -buffer -nargs=0 AgdaVersion call AgdaVersion(0)
+command! -buffer -nargs=0 AgdaLoad call AgdaLoad(v:false)
+command! -buffer -nargs=0 AgdaVersion call AgdaVersion(v:false)
 command! -buffer -nargs=0 AgdaReload silent! make!|redraw!
 command! -buffer -nargs=0 AgdaRestartAgda exec s:python_cmd 'RestartAgda()'
 command! -buffer -nargs=0 AgdaShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
