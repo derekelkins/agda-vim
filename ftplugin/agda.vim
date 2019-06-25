@@ -232,6 +232,49 @@ exec s:python_until_eof
 import vim
 import re
 import subprocess
+from functools import wraps
+
+
+def vim_func(vim_fname_or_func=None):
+    '''Expose a python function to vim, optionally overriding its name.'''
+
+    def wrap_func(func, vim_fname):
+        fname = func.func_name
+        vim_fname = vim_fname or fname
+
+        arg_names = func.func_code.co_varnames[:func.func_code.co_argcount]
+        arg_defaults = dict(zip(arg_names[:-len(func.func_defaults or ()):], func.func_defaults or []))
+
+        @wraps(func)
+        def from_vim(vim_arg_dict):
+            args = {}
+            for k in arg_names:
+                try:
+                    args[k] = vim_arg_dict[k]
+                except KeyError:
+                    args[k] = arg_defaults[k]
+            return func(**args)
+
+        setattr(func, 'from_vim', from_vim)
+
+        vim.command('''
+            function! {vim_fname}({vim_params})
+                py {fname}.from_vim(vim.eval(\'a:\'))
+            endfunction
+        '''.format(
+            vim_fname=vim_fname,
+            vim_params=', '.join(arg_names),
+            fname=fname,
+        ))
+        return func
+
+    if callable(vim_fname_or_func):
+        return wrap_func(func=vim_fname_or_func, vim_fname=None)
+
+    def wrapper(func):
+        return wrap_func(func=func, vim_fname=vim_fname_or_func)
+    return wrapper
+
 
 # start Agda
 # TODO: I'm pretty sure this will start an agda process per buffer which is less than desirable...
@@ -505,195 +548,180 @@ def getHoleBodyAtCursor():
 def getWordAtCursor():
     return vim.eval("expand('<cWORD>')").strip()
 
-EOF
 
-function! AgdaVersion(quiet)
-exec s:python_until_eof
-sendCommand('Cmd_show_version', quiet = int(vim.eval('a:quiet')) == 1)
-EOF
-endfunction
+## Directly exposed functions: {
 
-function! AgdaLoad(quiet)
-exec s:python_until_eof
-f = vim.current.buffer.name
-sendCommandLoad(f, int(vim.eval('a:quiet')) == 1)
-if int(vim.eval('g:agdavim_enable_goto_definition')) == 1:
-    sendCommandLoadHighlightInfo(f, int(vim.eval('a:quiet')) == 1)
-EOF
-endfunction
+@vim_func
+def AgdaVersion(quiet):
+    sendCommand('Cmd_show_version', quiet = int(quiet) == 1)
 
-function! AgdaLoadHighlightInfo(quiet)
-exec s:python_until_eof
-f = vim.current.buffer.name
-sendCommandLoadHighlightInfo(f, int(vim.eval('a:quiet')) == 1)
-EOF
-endfunction
 
-function! AgdaGotoAnnotation()
-exec s:python_until_eof
-gotoAnnotation()
-EOF
-endfunction
+@vim_func
+def AgdaLoad(quiet):
+    f = vim.current.buffer.name
+    sendCommandLoad(f, int(quiet) == 1)
+    if int(vim.eval('g:agdavim_enable_goto_definition')) == 1:
+        sendCommandLoadHighlightInfo(f, int(quiet) == 1)
 
-function! AgdaGive()
-exec s:python_until_eof
-result = getHoleBodyAtCursor()
 
-if agdaVersion < [2,5,3,0]:
-    useForce = ""
-else:
-    useForce = "WithoutForce" # or WithForce
+@vim_func
+def AgdaLoadHighlightInfo(quiet):
+    f = vim.current.buffer.name
+    sendCommandLoadHighlightInfo(f, int(quiet) == 1)
 
-if result is None:
-    print("No hole under the cursor")
-elif result[1] is None:
-    print("Goal not loaded")
-elif result[0] == "?":
-    sendCommand('Cmd_give %s %d noRange "%s"' % (useForce, result[1], escape(promptUser("Enter expression: "))))
-else:
-    sendCommand('Cmd_give %s %d noRange "%s"' % (useForce, result[1], escape(result[0])))
-EOF
-endfunction
 
-function! AgdaMakeCase()
-exec s:python_until_eof
-result = getHoleBodyAtCursor()
-if result is None:
-    print("No hole under the cursor")
-elif result[1] is None:
-    print("Goal not loaded")
-elif result[0] == "?":
-    sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], escape(promptUser("Make case on: "))))
-else:
-    sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], escape(result[0])))
-EOF
-endfunction
+@vim_func
+def AgdaGotoAnnotation():
+    gotoAnnotation()
 
-function! AgdaRefine(unfoldAbstract)
-exec s:python_until_eof
-result = getHoleBodyAtCursor()
-if result is None:
-    print("No hole under the cursor")
-elif result[1] is None:
-    print("Goal not loaded")
-else:
-    sendCommand('Cmd_refine_or_intro %s %d noRange "%s"' % (vim.eval('a:unfoldAbstract'), result[1], escape(result[0])))
-EOF
-endfunction
 
-function! AgdaAuto()
-exec s:python_until_eof
-result = getHoleBodyAtCursor()
-if result is None:
-    print("No hole under the cursor")
-elif result[1] is None:
-    print("Goal not loaded")
-else:
-    if agdaVersion < [2,6,0,0]:
-        sendCommand('Cmd_auto %d noRange "%s"' % (result[1], escape(result[0]) if result[0] != "?" else ""))
+@vim_func
+def AgdaGive():
+    result = getHoleBodyAtCursor()
+
+    if agdaVersion < [2,5,3,0]:
+        useForce = ""
     else:
-        sendCommand('Cmd_autoOne %d noRange "%s"' % (result[1], escape(result[0]) if result[0] != "?" else ""))
-EOF
-endfunction
+        useForce = "WithoutForce" # or WithForce
 
-function! AgdaContext()
-exec s:python_until_eof
-result = getHoleBodyAtCursor()
-if result is None:
-    print("No hole under the cursor")
-elif result[1] is None:
-    print("Goal not loaded")
-else:
-    sendCommand('Cmd_goal_type_context_infer %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
-EOF
-endfunction
-
-function! AgdaInfer()
-exec s:python_until_eof
-result = getHoleBodyAtCursor()
-if result is None:
-    sendCommand('Cmd_infer_toplevel %s "%s"' % (rewriteMode, escape(promptUser("Enter expression: "))))
-elif result[1] is None:
-    print("Goal not loaded")
-else:
-    sendCommand('Cmd_infer %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
-EOF
-endfunction
-
-" As of 2.5.2, the options are "DefaultCompute", "IgnoreAbstract", "UseShowInstance"
-function! AgdaNormalize(unfoldAbstract)
-exec s:python_until_eof
-unfoldAbstract = vim.eval("a:unfoldAbstract")
-
-if agdaVersion < [2,5,2,0]:
-    unfoldAbstract = str(unfoldAbstract == "DefaultCompute")
-
-result = getHoleBodyAtCursor()
-if result is None:
-    sendCommand('Cmd_compute_toplevel %s "%s"' % (unfoldAbstract, escape(promptUser("Enter expression: "))))
-elif result[1] is None:
-    print("Goal not loaded")
-else:
-    sendCommand('Cmd_compute %s %d noRange "%s"' % (unfoldAbstract, result[1], escape(result[0])))
-EOF
-endfunction
-
-function! AgdaWhyInScope(term)
-exec s:python_until_eof
-
-termName = vim.eval('a:term')
-result = getHoleBodyAtCursor() if termName == '' else None
-
-if result is None:
-    termName = getWordAtCursor() if termName == '' else termName
-    termName = promptUser("Enter name: ") if termName == '' else termName
-    sendCommand('Cmd_why_in_scope_toplevel "%s"' % escape(termName))
-elif result[1] is None:
-    print("Goal not loaded")
-else:
-    sendCommand('Cmd_why_in_scope %d noRange "%s"' % (result[1], escape(result[0])))
-EOF
-endfunction
-
-function! AgdaShowModule(module)
-exec s:python_until_eof
-
-moduleName = vim.eval('a:module')
-result = getHoleBodyAtCursor() if moduleName == '' else None
-
-if agdaVersion < [2,4,2,0]:
     if result is None:
-        moduleName = promptUser("Enter module name: ") if moduleName == '' else moduleName
-        sendCommand('Cmd_show_module_contents_toplevel "%s"' % escape(moduleName))
+        print("No hole under the cursor")
+    elif result[1] is None:
+        print("Goal not loaded")
+    elif result[0] == "?":
+        sendCommand('Cmd_give %s %d noRange "%s"' % (useForce, result[1], escape(promptUser("Enter expression: "))))
+    else:
+        sendCommand('Cmd_give %s %d noRange "%s"' % (useForce, result[1], escape(result[0])))
+
+
+@vim_func
+def AgdaMakeCase():
+    result = getHoleBodyAtCursor()
+    if result is None:
+        print("No hole under the cursor")
+    elif result[1] is None:
+        print("Goal not loaded")
+    elif result[0] == "?":
+        sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], escape(promptUser("Make case on: "))))
+    else:
+        sendCommand('Cmd_make_case %d noRange "%s"' % (result[1], escape(result[0])))
+
+
+@vim_func
+def AgdaRefine(unfoldAbstract):
+    result = getHoleBodyAtCursor()
+    if result is None:
+        print("No hole under the cursor")
     elif result[1] is None:
         print("Goal not loaded")
     else:
-        sendCommand('Cmd_show_module_contents %d noRange "%s"' % (result[1], escape(result[0])))
-else:
+        sendCommand('Cmd_refine_or_intro %s %d noRange "%s"' % (unfoldAbstract, result[1], escape(result[0])))
+
+
+@vim_func
+def AgdaAuto():
+    result = getHoleBodyAtCursor()
     if result is None:
-        moduleName = promptUser("Enter module name: ") if moduleName == '' else moduleName
-        sendCommand('Cmd_show_module_contents_toplevel %s "%s"' % (rewriteMode, escape(moduleName)))
+        print("No hole under the cursor")
     elif result[1] is None:
         print("Goal not loaded")
     else:
-        sendCommand('Cmd_show_module_contents %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
-EOF
-endfunction
+        if agdaVersion < [2,6,0,0]:
+            sendCommand('Cmd_auto %d noRange "%s"' % (result[1], escape(result[0]) if result[0] != "?" else ""))
+        else:
+            sendCommand('Cmd_autoOne %d noRange "%s"' % (result[1], escape(result[0]) if result[0] != "?" else ""))
 
-function! AgdaHelperFunction()
-exec s:python_until_eof
-result = getHoleBodyAtCursor()
 
-if result is None:
-    print("No hole under the cursor")
-elif result[1] is None:
-    print("Goal not loaded")
-elif result[0] == "?":
-    sendCommand('Cmd_helper_function %s %d noRange "%s"' % (rewriteMode, result[1], escape(promptUser("Enter name for helper function: "))))
-else:
-    sendCommand('Cmd_helper_function %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
+@vim_func
+def AgdaContext():
+    result = getHoleBodyAtCursor()
+    if result is None:
+        print("No hole under the cursor")
+    elif result[1] is None:
+        print("Goal not loaded")
+    else:
+        sendCommand('Cmd_goal_type_context_infer %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
+
+
+@vim_func
+def AgdaInfer():
+    result = getHoleBodyAtCursor()
+    if result is None:
+        sendCommand('Cmd_infer_toplevel %s "%s"' % (rewriteMode, escape(promptUser("Enter expression: "))))
+    elif result[1] is None:
+        print("Goal not loaded")
+    else:
+        sendCommand('Cmd_infer %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
+
+
+# As of 2.5.2, the options are "DefaultCompute", "IgnoreAbstract", "UseShowInstance"
+@vim_func
+def AgdaNormalize(unfoldAbstract):
+    if agdaVersion < [2,5,2,0]:
+        unfoldAbstract = str(unfoldAbstract == "DefaultCompute")
+
+    result = getHoleBodyAtCursor()
+    if result is None:
+        sendCommand('Cmd_compute_toplevel %s "%s"' % (unfoldAbstract, escape(promptUser("Enter expression: "))))
+    elif result[1] is None:
+        print("Goal not loaded")
+    else:
+        sendCommand('Cmd_compute %s %d noRange "%s"' % (unfoldAbstract, result[1], escape(result[0])))
+
+
+@vim_func
+def AgdaWhyInScope(termName):
+    result = getHoleBodyAtCursor() if termName == '' else None
+
+    if result is None:
+        termName = getWordAtCursor() if termName == '' else termName
+        termName = promptUser("Enter name: ") if termName == '' else termName
+        sendCommand('Cmd_why_in_scope_toplevel "%s"' % escape(termName))
+    elif result[1] is None:
+        print("Goal not loaded")
+    else:
+        sendCommand('Cmd_why_in_scope %d noRange "%s"' % (result[1], escape(result[0])))
+
+
+@vim_func
+def AgdaShowModule(moduleName):
+    result = getHoleBodyAtCursor() if moduleName == '' else None
+
+    if agdaVersion < [2,4,2,0]:
+        if result is None:
+            moduleName = promptUser("Enter module name: ") if moduleName == '' else moduleName
+            sendCommand('Cmd_show_module_contents_toplevel "%s"' % escape(moduleName))
+        elif result[1] is None:
+            print("Goal not loaded")
+        else:
+            sendCommand('Cmd_show_module_contents %d noRange "%s"' % (result[1], escape(result[0])))
+    else:
+        if result is None:
+            moduleName = promptUser("Enter module name: ") if moduleName == '' else moduleName
+            sendCommand('Cmd_show_module_contents_toplevel %s "%s"' % (rewriteMode, escape(moduleName)))
+        elif result[1] is None:
+            print("Goal not loaded")
+        else:
+            sendCommand('Cmd_show_module_contents %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
+
+
+@vim_func
+def AgdaHelperFunction():
+    result = getHoleBodyAtCursor()
+
+    if result is None:
+        print("No hole under the cursor")
+    elif result[1] is None:
+        print("Goal not loaded")
+    elif result[0] == "?":
+        sendCommand('Cmd_helper_function %s %d noRange "%s"' % (rewriteMode, result[1], escape(promptUser("Enter name for helper function: "))))
+    else:
+        sendCommand('Cmd_helper_function %s %d noRange "%s"' % (rewriteMode, result[1], escape(result[0])))
+
+
+## }
+
 EOF
-endfunction
 
 command! -buffer -nargs=0 AgdaLoad call AgdaLoad(0)
 command! -buffer -nargs=0 AgdaVersion call AgdaVersion(0)
