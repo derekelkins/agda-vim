@@ -400,14 +400,12 @@ EOF
 
 function! AgdaVersion(quiet)
 exec s:python_until_eof
-import vim
 sendCommand('Cmd_show_version', quiet = int(vim.eval('a:quiet')) == 1)
 EOF
 endfunction
 
 function! Load(quiet)
 exec s:python_until_eof
-import vim
 f = vim.current.buffer.name
 sendCommandLoad(f, int(vim.eval('a:quiet')) == 1)
 if int(vim.eval('g:agdavim_enable_goto_definition')) == 1:
@@ -417,7 +415,6 @@ endfunction
 
 function! LoadHighlightInfo(quiet)
 exec s:python_until_eof
-import vim
 f = vim.current.buffer.name
 sendCommandLoadHighlightInfo(f, int(vim.eval('a:quiet')) == 1)
 EOF
@@ -425,15 +422,12 @@ endfunction
 
 function! GotoAnnotation()
 exec s:python_until_eof
-import vim
 gotoAnnotation()
 EOF
 endfunction
 
 function! Give()
 exec s:python_until_eof
-import vim
-
 result = getHoleBodyAtCursor()
 
 if agdaVersion < [2,5,3,0]:
@@ -454,7 +448,6 @@ endfunction
 
 function! MakeCase()
 exec s:python_until_eof
-import vim
 result = getHoleBodyAtCursor()
 if result is None:
     print("No hole under the cursor")
@@ -469,7 +462,6 @@ endfunction
 
 function! Refine(unfoldAbstract)
 exec s:python_until_eof
-import vim
 result = getHoleBodyAtCursor()
 if result is None:
     print("No hole under the cursor")
@@ -482,7 +474,6 @@ endfunction
 
 function! Auto()
 exec s:python_until_eof
-import vim
 result = getHoleBodyAtCursor()
 if result is None:
     print("No hole under the cursor")
@@ -498,7 +489,6 @@ endfunction
 
 function! Context()
 exec s:python_until_eof
-import vim
 result = getHoleBodyAtCursor()
 if result is None:
     print("No hole under the cursor")
@@ -511,7 +501,6 @@ endfunction
 
 function! Infer()
 exec s:python_until_eof
-import vim
 result = getHoleBodyAtCursor()
 if result is None:
     sendCommand('Cmd_infer_toplevel %s "%s"' % (rewriteMode, escape(promptUser("Enter expression: "))))
@@ -525,8 +514,6 @@ endfunction
 " As of 2.5.2, the options are "DefaultCompute", "IgnoreAbstract", "UseShowInstance"
 function! Normalize(unfoldAbstract)
 exec s:python_until_eof
-import vim
-
 unfoldAbstract = vim.eval("a:unfoldAbstract")
 
 if agdaVersion < [2,5,2,0]:
@@ -586,8 +573,6 @@ endfunction
 
 function! HelperFunction()
 exec s:python_until_eof
-import vim
-
 result = getHoleBodyAtCursor()
 
 if result is None:
