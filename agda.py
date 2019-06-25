@@ -262,9 +262,9 @@ def sendCommandLoadHighlightInfo(file, quiet):
 def sendCommandLoad(file, quiet):
     global agdaVersion
     if agdaVersion < [2,5,0,0]: # in 2.5 they changed it so Cmd_load takes commandline arguments
-        incpaths_str = ",".join(vim.eval("g:agdavim_agda_includepathlist"))
+        incpaths_str = ",".join(vim.vars['agdavim_agda_includepathlist'])
     else:
-        incpaths_str = "\"-i\"," + ",\"-i\",".join(vim.eval("g:agdavim_agda_includepathlist"))
+        incpaths_str = "\"-i\"," + ",\"-i\",".join(vim.vars['agdavim_agda_includepathlist'])
     sendCommand('Cmd_load "%s" [%s]' % (escape(file), incpaths_str), quiet = quiet)
 
 #def getIdentifierAtCursor():
@@ -329,7 +329,7 @@ def AgdaVersion(quiet):
 def AgdaLoad(quiet):
     f = vim.current.buffer.name
     sendCommandLoad(f, int(quiet) == 1)
-    if int(vim.eval('g:agdavim_enable_goto_definition')) == 1:
+    if int(vim.vars['agdavim_enable_goto_definition']) == 1:
         sendCommandLoadHighlightInfo(f, int(quiet) == 1)
 
 
