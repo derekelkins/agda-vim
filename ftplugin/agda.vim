@@ -44,6 +44,26 @@ let g:agdavim_enable_goto_definition = get(g:, 'agdavim_enable_goto_definition',
 setlocal errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 let b:undo_ftplugin .= ' | setlocal errorformat<'
 
+setlocal nolisp
+let b:undo_ftplugin .= ' | setlocal nolisp<'
+
+setlocal formatoptions-=t
+setlocal formatoptions+=croql
+let b:undo_ftplugin .= ' | setlocal formatoptions<'
+
+setlocal autoindent
+let b:undo_ftplugin .= ' | setlocal autoindent<'
+
+" {-
+" -- Foo
+" -- bar
+" -}
+setlocal comments=sfl:{-,mb1:--,ex:-},:--
+let b:undo_ftplugin .= ' | setlocal comments<'
+
+setlocal commentstring=--\ %s
+let b:undo_ftplugin .= ' | setlocal commentstring<'
+
 setlocal iskeyword=@,!-~,^\,,^\(,^\),^\",^\',192-255
 let b:undo_ftplugin .= ' | setlocal iskeyword<'
 
