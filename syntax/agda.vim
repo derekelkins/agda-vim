@@ -25,6 +25,8 @@ set cpo&vim
 "   agdaFunction
 "   agdaInfixConstructor
 "   agdaInfixFunction
+"
+syn iskeyword @,!-~,^\,,^\(,^\),^\",^\',192-255
 
 syn match   agdaKeywords     "\v(^|\s|[.(){};])@<=(abstract|data|hiding|import|as|infix|infixl|infixr|module|mutual|open|primitive|private|public|record|renaming|rewrite|using|where|with|field|constructor|instance|syntax|pattern|inductive|coinductive)($|\s|[.(){};])@="
 syn match   agdaDubious      "\v(^|\s|[.(){};])@<=(postulate|codata)($|\s|[.(){};])@="

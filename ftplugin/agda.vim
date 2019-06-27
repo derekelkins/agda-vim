@@ -44,6 +44,9 @@ let g:agdavim_enable_goto_definition = get(g:, 'agdavim_enable_goto_definition',
 setlocal errorformat=\ \ /%\\&%f:%l\\,%c-%.%#,%E/%\\&%f:%l\\,%c-%.%#,%Z,%C%m,%-G%.%#
 let b:undo_ftplugin .= ' | setlocal errorformat<'
 
+setlocal iskeyword=@,!-~,^\,,^\(,^\),^\",^\',192-255
+let b:undo_ftplugin .= ' | setlocal iskeyword<'
+
 " Python 3 is NOT supported.  This code and other changes are left here to
 " ease adding future Python 3 support.  Right now the main issue is that
 " Python 3 treats strings are sequences of characters rather than sequences of
