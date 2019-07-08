@@ -97,7 +97,7 @@ function! s:LogAgda(name, text, append)
     let eventignore_save = &eventignore
     set eventignore=all
 
-    exec 'setlocal statusline=' . substitute(a:name, ' ', '\\ ', 'g')
+    let &l:statusline = a:name
     if a:append == 'True'
         silent put =a:text
     else
