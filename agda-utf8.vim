@@ -1,3 +1,6 @@
+let s:cpo_save = &cpo
+set cpo&vim
+
 " Combining marks
 noremap! <buffer> <LocalLeader>over`  ̀
 noremap! <buffer> <LocalLeader>over'  ́
@@ -410,3 +413,5 @@ noremap! <buffer> <LocalLeader>Chi Χ
 noremap! <buffer> <LocalLeader>Psi Ψ
 noremap! <buffer> <LocalLeader>Omega Ω
 noremap! <buffer> <LocalLeader>V Ω
+
+let &cpo = s:cpo_save
