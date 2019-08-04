@@ -4,11 +4,17 @@
 " http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.VIMEditing
 " for convenience
 
-if version < 600
-    syn clear
-elseif exists("b:current_syntax")
+if !exists('main_syntax')
+  if exists('b:current_syntax')
     finish
+  endif
+  let main_syntax = 'agda'
+elseif exists('b:current_syntax') && b:current_syntax == 'agda'
+  finish
 endif
+
+let s:cpo_save = &cpo
+set cpo&vim
 
 " To tokenize, the best pattern I've found so far is this:
 "   (^|\s|[.(){};])@<=token($|\s|[.(){};])@=
@@ -19,6 +25,8 @@ endif
 "   agdaFunction
 "   agdaInfixConstructor
 "   agdaInfixFunction
+"
+syn iskeyword @,!-~,^\,,^\(,^\),^\",^\',192-255
 
 syn match   agdaKeywords     "\v(^|\s|[.(){};])@<=(abstract|data|hiding|import|as|infix|infixl|infixr|module|mutual|open|primitive|private|public|record|renaming|rewrite|using|where|with|field|constructor|instance|syntax|pattern|inductive|coinductive)($|\s|[.(){};])@="
 syn match   agdaDubious      "\v(^|\s|[.(){};])@<=(postulate|codata)($|\s|[.(){};])@="
@@ -57,3 +65,11 @@ hi def link agdaPragma           Comment
 hi def      agdaTODO             cterm=bold,underline ctermfg=2 " green
 hi def      agdaFIXME            cterm=bold,underline ctermfg=3 " yellow
 hi def      agdaXXX              cterm=bold,underline ctermfg=1 " red
+
+
+let b:current_syntax = 'agda'
+if main_syntax == 'agda'
+  unlet main_syntax
+endif
+let &cpo = s:cpo_save
+unlet s:cpo_save
