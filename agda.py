@@ -59,11 +59,6 @@ def vim_bool(s):
         return True
     return bool(int(s))
 
-
-# start Agda
-# TODO: I'm pretty sure this will start an agda process per buffer which is less than desirable...
-agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
-
 goals = {}
 annotations = []
 
@@ -92,10 +87,6 @@ def promptUser(msg):
     result = vim.eval('input("%s")' % msg)
     vim.command('call inputrestore()')
     return result
-
-def AgdaRestart():
-    global agda
-    agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
 
 def findGoals(goalList):
     global goals
@@ -264,12 +255,13 @@ def interpretResponse(responses, quiet = False):
         else:
             pass # print(response)
 
+@vim_func
+def AgdaInterpretResponse(responses, quiet = False):
+    interpretResponse(responses, False)
+
 def sendCommand(arg, quiet=False):
-    vim.command('silent! write')
-    f = vim.current.buffer.name
-    # The x is a really hacky way of getting a consistent final response.  Namely, "cannot read"
-    agda.stdin.write('IOTCM "%s" None Direct (%s)\nx\n' % (escape(f), arg))
-    interpretResponse(getOutput(), quiet)
+    cmd = 'call agda#job#send(\'%s\',%s)' % (arg, '1' if quiet else '0')
+    vim.command(cmd)
 
 def sendCommandLoadHighlightInfo(file, quiet):
     sendCommand('Cmd_load_highlighting_info "%s"' % escape(file), quiet = quiet)
@@ -338,14 +330,6 @@ def getWordAtCursor():
 @vim_func(conv={'quiet': vim_bool})
 def AgdaVersion(quiet):
     sendCommand('Cmd_show_version', quiet=quiet)
-
-
-@vim_func(conv={'quiet': vim_bool})
-def AgdaLoad(quiet):
-    f = vim.current.buffer.name
-    sendCommandLoad(f, quiet)
-    if vim.vars['agdavim_enable_goto_definition']:
-        sendCommandLoadHighlightInfo(f, quiet)
 
 
 @vim_func(conv={'quiet': vim_bool})
