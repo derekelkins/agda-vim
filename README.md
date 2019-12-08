@@ -75,9 +75,9 @@ The commands and mappings as defined currently are below, as well as their Emacs
     " C-c C-, -> \e
     nnoremap <buffer> <LocalLeader>e :call Context()<CR>
     " C-u C-c C-n -> \n
-    nnoremap <buffer> <LocalLeader>n :call Normalize("False")<CR>
+    nnoremap <buffer> <LocalLeader>n :call Normalize("IgnoreAbstract")<CR>
     " C-c C-n -> \N
-    nnoremap <buffer> <LocalLeader>N :call Normalize("True")<CR>
+    nnoremap <buffer> <LocalLeader>N :call Normalize("DefaultCompute")<CR>
     nnoremap <buffer> <LocalLeader>M :call ShowModule('')<CR>
     " C-c C-w -> \y
     nnoremap <buffer> <LocalLeader>y :call WhyInScope('')<CR>
