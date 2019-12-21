@@ -21,10 +21,6 @@ function! AgdaReloadSyntax()
 endfunction
 call AgdaReloadSyntax()
 
-function! AgdaLoad(quiet)
-    " Do nothing.  Overidden below with a Python function if python is supported.
-endfunction
-
 autocmd QuickfixCmdPost make call AgdaReloadSyntax()|call AgdaVersion(v:true)|call AgdaLoad(v:true)
 
 setlocal autowrite
@@ -229,9 +225,19 @@ endfunction
 
 execute s:python_loadfile . resolve(expand('<sfile>:p:h') . '/../agda.py')
 
+call agda#job#start(function('AgdaInterpretResponse'))
+
+function! AgdaLoad(quiet)
+  let l:bufname = expand('%')
+  call agda#job#sendLoad(l:bufname, a:quiet)
+  if g:agdavim_enable_goto_definition
+    call agda#job#sendLoadHighlightInfo(l:bufname, a:quiet)
+  endif
+endfunction
+
 command! -buffer -nargs=0 AgdaLoad call AgdaLoad(v:false)
 command! -buffer -nargs=0 AgdaVersion call AgdaVersion(v:false)
-command! -buffer -nargs=0 AgdaReload silent! make!|redraw!
+" command! -buffer -nargs=0 AgdaReload silent! make!|redraw!
 command! -buffer -nargs=0 AgdaRestartAgda exec s:python_cmd 'RestartAgda()'
 command! -buffer -nargs=0 AgdaShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
 command! -buffer -nargs=0 AgdaHideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
@@ -248,7 +254,7 @@ command! -buffer -nargs=0 AgdaSetRewriteModeSimplified exec s:python_cmd "setRew
 command! -buffer -nargs=0 AgdaSetRewriteModeHeadNormal exec s:python_cmd "setRewriteMode('HeadNormal')"
 command! -buffer -nargs=0 AgdaSetRewriteModeInstantiated exec s:python_cmd "setRewriteMode('Instantiated')"
 
-nnoremap <buffer> <LocalLeader>l :AgdaReload<CR>
+nnoremap <buffer> <LocalLeader>l :AgdaLoad<CR>
 nnoremap <buffer> <LocalLeader>t :call AgdaInfer()<CR>
 nnoremap <buffer> <LocalLeader>r :call AgdaRefine("False")<CR>
 nnoremap <buffer> <LocalLeader>R :call AgdaRefine("True")<CR>
@@ -275,7 +281,8 @@ inoremap <buffer> <silent> <C-g>  <C-o>:let _s=@/<CR><C-o>/ {!\\| ?<CR><C-o>:let
 nnoremap <buffer> <silent> <C-y>  2h:let _s=@/<CR>? {!\\| \?<CR>:let @/=_s<CR>2l
 inoremap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
 
-AgdaReload
+" AgdaReload
+AgdaVersion
 
 endif
 
