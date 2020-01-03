@@ -232,7 +232,7 @@ execute s:python_loadfile . resolve(expand('<sfile>:p:h') . '/../agda.py')
 command! -buffer -nargs=0 AgdaLoad call AgdaLoad(v:false)
 command! -buffer -nargs=0 AgdaVersion call AgdaVersion(v:false)
 command! -buffer -nargs=0 AgdaReload silent! make!|redraw!
-command! -buffer -nargs=0 AgdaRestartAgda exec s:python_cmd 'RestartAgda()'
+command! -buffer -nargs=0 AgdaRestartAgda exec s:python_cmd 'AgdaRestart()'
 command! -buffer -nargs=0 AgdaShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
 command! -buffer -nargs=0 AgdaHideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"
 command! -buffer -nargs=0 AgdaToggleImplicitArguments exec s:python_cmd "sendCommand('ToggleImplicitArgs')"
