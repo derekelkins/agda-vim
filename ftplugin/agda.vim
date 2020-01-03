@@ -11,7 +11,7 @@ set cpo&vim
 " The AgdaReloadSyntax function is reproduced from
 " http://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.VIMEditing
 " the remainder is covered by the license described in LICENSE.
-function! AgdaReloadSyntax()
+function! AgdaReloadSyntax(...)
     syntax clear
     let f = expand('%:h') . "/." . expand('%:t') . ".vim"
     if filereadable(f)
@@ -32,7 +32,8 @@ let b:undo_ftplugin .= ' | setlocal autowrite<'
 
 let g:agdavim_agda_includepathlist = deepcopy(['.'] + get(g:, 'agda_extraincpaths', []))
 call map(g:agdavim_agda_includepathlist, ' ''"'' . v:val . ''"'' ')
-let &l:makeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' %'
+let g:agda_premakeprg = 'agda --vim ' . '-i ' . join(g:agdavim_agda_includepathlist, ' -i ') . ' '
+let &l:makeprg = g:agda_premakeprg . '%'
 let b:undo_ftplugin .= ' | setlocal makeprg<'
 
 if get(g:, 'agdavim_includeutf8_mappings', v:true)
@@ -231,7 +232,8 @@ execute s:python_loadfile . resolve(expand('<sfile>:p:h') . '/../agda.py')
 
 command! -buffer -nargs=0 AgdaLoad call AgdaLoad(v:false)
 command! -buffer -nargs=0 AgdaVersion call AgdaVersion(v:false)
-command! -buffer -nargs=0 AgdaReload silent! make!|redraw!
+command! -buffer -nargs=0 AgdaReload call job_start(g:agda_premakeprg . expand('%'), { 'in_io': 'null', 'out_io': 'null', 'err_io': 'null', 'exit_cb': 'AgdaReloadSyntax' })|call AgdaVersion(v:true)|cexpr []|call AgdaLoad(v:true)
+" command! -buffer -nargs=0 AgdaReload silent! make!|redraw!
 command! -buffer -nargs=0 AgdaRestartAgda exec s:python_cmd 'AgdaRestart()'
 command! -buffer -nargs=0 AgdaShowImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs True')"
 command! -buffer -nargs=0 AgdaHideImplicitArguments exec s:python_cmd "sendCommand('ShowImplicitArgs False')"

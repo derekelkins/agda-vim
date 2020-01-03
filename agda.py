@@ -1,4 +1,5 @@
 import vim
+import json
 import re
 import subprocess
 from functools import wraps
@@ -62,7 +63,7 @@ def vim_bool(s):
 
 # start Agda
 # TODO: I'm pretty sure this will start an agda process per buffer which is less than desirable...
-agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
+agda = subprocess.Popen(["agda", "--interaction-json"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
 
 goals = {}
 annotations = []
@@ -95,7 +96,7 @@ def promptUser(msg):
 
 def AgdaRestart():
     global agda
-    agda = subprocess.Popen(["agda", "--interaction"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
+    agda = subprocess.Popen(["agda", "--interaction-json"], bufsize = 1, stdin = subprocess.PIPE, stdout = subprocess.PIPE, universal_newlines = True)
 
 def findGoals(goalList):
     global goals
@@ -137,10 +138,10 @@ def findGoal(row, col):
     return None
 
 def getOutput():
-    line = agda.stdout.readline()[7:] # get rid of the "Agda2> " prompt
+    line = agda.stdout.readline()[6:] # get rid of the "JSON> " prompt
     lines = []
-    while not line.startswith('Agda2> cannot read') and line != "":
-        lines.append(line)
+    while not line.startswith('JSON> cannot read') and line != "":
+        lines.append(json.loads(line))
         line = agda.stdout.readline()
     return lines
 
@@ -152,14 +153,6 @@ def parseVersion(versionString):
 # This is not very efficient presumably.
 def c2b(n):
     return int(vim.eval('byteidx(join(getline(1, "$"), "\n"),%d)' % n))
-
-# See https://github.com/agda/agda/blob/323f58f9b8dad239142ed1dfa0c60338ea2cb157/src/data/emacs-mode/annotation.el#L112
-def parseAnnotation(spans):
-    global annotations
-    anns = re.findall(r'\((\d+) (\d+) \([^\)]*\) \w+ \(\"([^"]*)\" \. (\d+)\)\)', spans)
-    # TODO: This is assumed to be in sorted order.
-    for ann in anns:
-        annotations.append([c2b(int(ann[0])-1), c2b(int(ann[1])-1), ann[2], c2b(int(ann[3]))])
 
 def searchAnnotation(lo, hi, idx):
     global annotations
@@ -197,76 +190,102 @@ def gotoAnnotation():
     vim.command('%dgo' % pos)
 
 def interpretResponse(responses, quiet = False):
+    global annotations
+    resetBuffer = False
     for response in responses:
-        if response.startswith('(agda2-info-action ') or response.startswith('(agda2-info-action-and-copy '):
-            if quiet and '*Error*' in response: vim.command('cwindow')
-            strings = re.findall(r'"((?:[^"\\]|\\.)*)"', response[19:])
-            if strings[0] == '*Agda Version*':
-                parseVersion(strings[1])
+        if response['kind'] == 'DisplayInfo':
+            if response['info']['kind'] == 'Version':
+                parseVersion(response['info']['version'])
+            elif response['info']['kind'] == 'Error':
+                # Temporarily set the global value of errorformat because that's what cexpr uses.
+                olderrfmt = vim.options['errorformat']
+                vim.options['errorformat'] = vim.current.buffer.options['errorformat']
+                vim.command('cexpr "%s"' % escape(response['info']['payload']))
+                vim.options['errorformat'] = olderrfmt
+                # vim.command('cwindow')
+            else:
+                print(response)
             if quiet: continue
-            vim.command('call s:LogAgda("%s","%s","%s")'% (strings[0], strings[1], response.endswith('t)')))
-        elif "(agda2-goals-action '" in response:
-            findGoals([int(s) for s in re.findall(r'(\d+)', response[response.index("agda2-goals-action '")+21:])])
-        elif "(agda2-make-case-action-extendlam '" in response:
-            response = response.replace("?", "{!   !}") # this probably isn't safe
-            cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action-extendlam '")+34:])
-            col = vim.current.window.cursor[1]
-            line = vim.current.line
+            # vim.command('call s:LogAgda("%s","%s","%s")'% (response['info']['kind'], json.dumps(response['info'], ensure_ascii=False), 'False'))
+        elif response['kind'] == 'RunningInfo':
+            if quiet: continue
+            vim.command('call s:LogAgda("%s","%s","%s")'% ('*Type Checking*', response['message'], not resetBuffer))
+            resetBuffer = False
+        elif response['kind'] == 'ClearRunningInfo':
+            resetBuffer = True
+        elif response['kind'] == 'InteractionPoints':
+            findGoals(response['interactionPoints'])
+        elif response['kind'] == 'GiveAction':
+            # NOTE: response['interactionPoint'] is a number identifying the hole.
+            replaceHole(response['giveResult'].replace("?", "{!   !}"))
+        elif response['kind'] == 'MakeCase':
+            if response['variant'] == 'Function':
+                cases = [case.replace("?", "{!   !}") for case in response['clauses']]
+                row = vim.current.window.cursor[0]
+                prefix = re.match(r'[ \t]*', unicode(vim.current.line, 'utf-8')).group()
+                vim.current.buffer[row-1:row] = [prefix + case for case in cases]
+                f = vim.current.buffer.name
+                sendCommandLoad(f, quiet)
+                break
+            elif response['variant'] == 'ExtendedLambda':
+                cases = [case.replace("?", "{!   !}") for case in response['clauses']]
+                col = vim.current.window.cursor[1]
+                line = unicode(vim.current.line, 'utf-8')
 
-            # TODO: The following logic is far from perfect.
-            # Look for a semicolon ending the previous case.
-            correction = 0
-            starts = [mo for mo in re.finditer(r';', line[:col])]
-            if len(starts) == 0:
-                # Look for the starting bracket of the extended lambda..
-                correction = 1
-                starts = [mo for mo in re.finditer(r'{[^!]', line[:col])]
+                # TODO: The following logic is far from perfect.
+                # Look for a semicolon ending the previous case.
+                correction = 0
+                starts = [mo for mo in re.finditer(r';', line[:col])]
                 if len(starts) == 0:
-                    # Assume the case is on a line by itself.
+                    # Look for the starting bracket of the extended lambda..
                     correction = 1
-                    starts = [mo for mo in re.finditer(r'^[ \t]*', line[:col])]
-            start = starts[-1].end() - correction
+                    starts = [mo for mo in re.finditer(r'{[^!]', line[:col])]
+                    if len(starts) == 0:
+                        # Assume the case is on a line by itself.
+                        correction = 1
+                        starts = [mo for mo in re.finditer(r'^[ \t]*', line[:col])]
+                start = starts[-1].end() - correction
 
-            # Look for a semicolon ending this case.
-            correction = 0
-            ends = re.search(r';', line[col:])
-            if ends == None:
-                # Look for the ending bracket of the extended lambda.
-                correction = 1
-                ends = re.search(r'[^!]}', line[col:])
+                # Look for a semicolon ending this case.
+                correction = 0
+                ends = re.search(r';', line[col:])
                 if ends == None:
-                    # Assume the case is on a line by itself (or at least has nothing after it).
-                    correction = 0
-                    ends = re.search(r'[ \t]*$', line[col:])
-            end = ends.start() + col + correction
+                    # Look for the ending bracket of the extended lambda.
+                    correction = 1
+                    ends = re.search(r'[^!]}', line[col:])
+                    if ends == None:
+                        # Assume the case is on a line by itself (or at least has nothing after it).
+                        correction = 0
+                        ends = re.search(r'[ \t]*$', line[col:])
+                end = ends.start() + col + correction
 
-            vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
-            f = vim.current.buffer.name
-            sendCommandLoad(f, quiet)
-            break
-        elif "(agda2-make-case-action '" in response:
-            response = response.replace("?", "{!   !}") # this probably isn't safe
-            cases = re.findall(r'"((?:[^"\\]|\\.)*)"', response[response.index("agda2-make-case-action '")+24:])
-            row = vim.current.window.cursor[0]
-            prefix = re.match(r'[ \t]*', vim.current.line).group()
-            vim.current.buffer[row-1:row] = [prefix + case for case in cases]
-            f = vim.current.buffer.name
-            sendCommandLoad(f, quiet)
-            break
-        elif response.startswith('(agda2-give-action '):
-            response = response.replace("?", "{!   !}")
-            match = re.search(r'(\d+)\s+"((?:[^"\\]|\\.)*)"', response[19:])
-            replaceHole(unescape(match.group(2)))
-        # elif response.startswith('(agda2-highlight-clear)'):
-            # pass # Maybe do something with this.
-        elif response.startswith('(agda2-highlight-add-annotations '):
-            parseAnnotation(response)
+                vim.current.line = line[:start] + " " + "; ".join(cases) + " " + line[end:]
+                f = vim.current.buffer.name
+                sendCommandLoad(f, quiet)
+                break
+        elif response['kind'] == 'Status':
+            # If I want to do something with this at some point.
+            # response['status']['showImplicitArguments']: Bool
+            # response['status']['checked']: Bool
+            pass
+        elif response['kind'] == 'ClearHighlighting':
+            annotations = []
+        elif response['kind'] == 'HighlightingInfo' and response['direct'] == True:
+            # TODO: This is assumed to be in sorted order.
+            anns = response['info']['payload']
+            for ann in anns:
+                rng = ann['range']
+                loc = ann['definitionSite']
+                if loc is None: continue
+                # TODO: The use of c2b here assumes filepath is the current file...
+                annotations.append([c2b(int(rng[0])-1), c2b(int(rng[1])-1), loc['filepath'], c2b(int(loc['position']))])
         else:
             pass # print(response)
 
 def sendCommand(arg, quiet=False):
     vim.command('silent! write')
     f = vim.current.buffer.name
+    # Highlighting options are None / NonInteractive / Interactive.
     # The x is a really hacky way of getting a consistent final response.  Namely, "cannot read"
     agda.stdin.write('IOTCM "%s" None Direct (%s)\nx\n' % (escape(f), arg))
     interpretResponse(getOutput(), quiet)
@@ -344,8 +363,8 @@ def AgdaVersion(quiet):
 def AgdaLoad(quiet):
     f = vim.current.buffer.name
     sendCommandLoad(f, quiet)
-    if vim.vars['agdavim_enable_goto_definition']:
-        sendCommandLoadHighlightInfo(f, quiet)
+    #if vim.vars['agdavim_enable_goto_definition']:
+    #    sendCommandLoadHighlightInfo(f, quiet)
 
 
 @vim_func(conv={'quiet': vim_bool})
