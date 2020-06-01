@@ -156,7 +156,7 @@ def c2b(n):
 # See https://github.com/agda/agda/blob/323f58f9b8dad239142ed1dfa0c60338ea2cb157/src/data/emacs-mode/annotation.el#L112
 def parseAnnotation(spans):
     global annotations
-    anns = re.findall(r'\((\d+) (\d+) \([^\)]*\) \w+ \(\"([^"]*)\" \. (\d+)\)\)', spans)
+    anns = re.findall(r'\((\d+) (\d+) \([^\)]*\) \w+ \w+ \(\"([^"]*)\" \. (\d+)\)\)', spans)
     # TODO: This is assumed to be in sorted order.
     for ann in anns:
         annotations.append([c2b(int(ann[0])-1), c2b(int(ann[1])-1), ann[2], c2b(int(ann[3]))])
@@ -264,23 +264,25 @@ def interpretResponse(responses, quiet = False):
         else:
             pass # print(response)
 
-def sendCommand(arg, quiet=False):
+def sendCommand(arg, quiet=False, highlighting=False):
     vim.command('silent! write')
     f = vim.current.buffer.name
     # The x is a really hacky way of getting a consistent final response.  Namely, "cannot read"
-    agda.stdin.write('IOTCM "%s" None Direct (%s)\nx\n' % (escape(f), arg))
+    agda.stdin.write('IOTCM "%s" %s Direct (%s)\nx\n' % (escape(f), "Interactive" if highlighting else "None", arg))
     interpretResponse(getOutput(), quiet)
 
 def sendCommandLoadHighlightInfo(file, quiet):
-    sendCommand('Cmd_load_highlighting_info "%s"' % escape(file), quiet = quiet)
+    sendCommand('Cmd_load_highlighting_info "%s"' % escape(file), quiet = quiet, highlighting = True)
 
-def sendCommandLoad(file, quiet):
+def sendCommandLoad(file, quiet, highlighting = None):
     global agdaVersion
     if agdaVersion < [2,5,0,0]: # in 2.5 they changed it so Cmd_load takes commandline arguments
         incpaths_str = ",".join(vim.vars['agdavim_agda_includepathlist'])
     else:
         incpaths_str = "\"-i\"," + ",\"-i\",".join(vim.vars['agdavim_agda_includepathlist'])
-    sendCommand('Cmd_load "%s" [%s]' % (escape(file), incpaths_str), quiet = quiet)
+    if highlighting is None:
+        highlighting = vim.vars['agdavim_enable_goto_definition']
+    sendCommand('Cmd_load "%s" [%s]' % (escape(file), incpaths_str), quiet = quiet, highlighting = highlighting)
 
 #def getIdentifierAtCursor():
 #    (r, c) = vim.current.window.cursor
@@ -344,8 +346,6 @@ def AgdaVersion(quiet):
 def AgdaLoad(quiet):
     f = vim.current.buffer.name
     sendCommandLoad(f, quiet)
-    if vim.vars['agdavim_enable_goto_definition']:
-        sendCommandLoadHighlightInfo(f, quiet)
 
 
 @vim_func(conv={'quiet': vim_bool})
