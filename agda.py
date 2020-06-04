@@ -282,9 +282,11 @@ def sendCommandLoadHighlightInfo(file, quiet):
 def sendCommandLoad(file, quiet, highlighting = None):
     global agdaVersion
     if agdaVersion < [2,5,0,0]: # in 2.5 they changed it so Cmd_load takes commandline arguments
-        incpaths_str = ",".join(vim.vars['agdavim_agda_includepathlist'])
+        # vim.vars returns bytes, so we have to decode them before joining
+        incpaths_str = ",".join(list(map(lambda x : x.decode(), vim.vars['agdavim_agda_includepathlist'])))
     else:
-        incpaths_str = "\"-i\"," + ",\"-i\",".join(vim.vars['agdavim_agda_includepathlist'])
+        # vim.vars returns bytes, so we have to decode them before joining
+        incpaths_str = "\"-i\"," + ",\"-i\",".join(list(map(lambda x : x.decode(), vim.vars['agdavim_agda_includepathlist'])))
     if highlighting is None:
         highlighting = vim.vars['agdavim_enable_goto_definition']
     sendCommand('Cmd_load "%s" [%s]' % (escape(file), incpaths_str), quiet = quiet, highlighting = highlighting)
