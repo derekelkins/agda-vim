@@ -28,7 +28,7 @@ set cpo&vim
 "
 syn iskeyword @,!-~,^\,,^\(,^\),^\",^\',192-255
 
-syn match   agdaKeywords     "\v(^|\s|[.(){};])@<=(abstract|data|hiding|import|as|infix|infixl|infixr|module|mutual|open|primitive|private|public|record|renaming|rewrite|using|where|with|field|constructor|instance|syntax|pattern|inductive|coinductive)($|\s|[.(){};])@="
+syn match   agdaKeywords     "\v(^|\s|[.(){};])@<=(abstract|data|hiding|import|as|infix|infixl|infixr|module|mutual|open|primitive|private|public|record|renaming|rewrite|using|where|with|field|constructor|instance|syntax|pattern|inductive|coinductive|variable)($|\s|[.(){};])@="
 syn match   agdaDubious      "\v(^|\s|[.(){};])@<=(postulate|codata)($|\s|[.(){};])@="
 syn match   agdaOperator     "\v(^|\s|[.(){};])@<=(let|in|forall|λ|→|-\>|:|∀|\=|\||\\)($|\s|[.(){};])@="
 syn match   agdaFunction     "\v(^|\s|[.(){};])@<=(Set[0-9₀-₉]*)($|\s|[.(){};])@="
