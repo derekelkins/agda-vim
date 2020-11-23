@@ -113,7 +113,7 @@ The commands and mappings as defined currently are below, as well as their Emacs
     inoremap <buffer> <silent> <C-y>  <C-o>2h<C-o>:let _s=@/<CR><C-o>? {!\\| \?<CR><C-o>:let @/=_s<CR><C-o>2l
 
 Some commonly used utf8 bindings are listed below, together with their emacs counterparts. For an exhaustive list,
-look in `agda-utf8.vim`.
+look in `autoload/agda.vim`.
 
 | utf-8 | agda-vim       | emacs             |
 |:-----:| -------------- | ----------------- |
