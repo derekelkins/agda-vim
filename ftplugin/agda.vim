@@ -145,26 +145,18 @@ setlocal matchpairs+=｟:｠
 setlocal matchpairs+=｢:｣
 let b:undo_ftplugin .= ' | setlocal matchpairs<'
 
-" Python 3 is NOT supported.  This code and other changes are left here to
-" ease adding future Python 3 support.  Right now the main issue is that
-" Python 3 treats strings are sequences of characters rather than sequences of
-" bytes which interacts poorly with the fact that the column offsets vim
-" returns are byte offsets in the current line.  The code below should run
-" under Python 3, but it won't match up the holes correctly if you have
-" Unicode characters.
 function! s:UsingPython2()
+  if has('python3')
+    return 0
+  endif
   return 1
-  "if has('python')
-  "  return 1
-  "endif
-  "return 0
 endfunction
 
 let s:using_python2 = s:UsingPython2()
 let s:python_cmd = s:using_python2 ? 'py ' : 'py3 '
 let s:python_loadfile = s:using_python2 ? 'pyfile ' : 'py3file '
 
-if has('python') " || has('python3')
+if has('python') || has('python3')
 
 function! s:LogAgda(name, text, append)
     let agdawinnr = bufwinnr('__Agda__')
